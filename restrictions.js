@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // 0. Home Icon Button (Loads full URL from config.homePage)
-        const homeUrl = config.homePage || 'language.html';
+        const homeUrl = config.homePage || 'home.html';
         const homeLink = document.createElement('a');
         homeLink.href = homeUrl;
         homeLink.className = 'home-icon-link';
