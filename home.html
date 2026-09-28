@@ -3,85 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 10 - Learning Hub</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Home - Language & Exam Hub</title>
+    <link rel="icon" type="image/png" href="logo1.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="master-config.js"></script>
+    <script src="restrictions.js"></script>
+    <style>
+        .hub-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .hub-card {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            gap: 15px;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hub-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .hub-image {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .hub-content {
+            flex: 1;
+        }
+
+        .hub-content h2 {
+            margin-top: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-size: 11.5pt;
+        }
+
+        .hub-content h2 a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .hub-content h2 a:hover {
+            text-decoration: underline;
+            opacity: 0.85;
+        }
+
+        .hub-content p {
+            color: var(--muted-color);
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            .hub-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hub-image {
+                width: 100%;
+                height: 110px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="cv-container">
-        <!-- Theme Switcher & Toolbar Icons -->
-        <div class="theme-switcher"></div>
 
-        <div class="cv-header">
-            <img src="me.jpeg" alt="Profile Image" class="profile-img">
-            <div>
-                <h1>Grade 10 Learning Hub</h1>
-                <p>Select a subject below to access your curriculum, study notes, practice tests, and modules.</p>
+<div class="cv-container">
+    <!-- restrictions.js automatically hooks into this class to place Home, Theme, and Download icons -->
+    <div class="theme-switcher"></div>
+
+    <h1>Welcome to Learning Hub</h1>
+    <p style="color: var(--muted-color); margin-bottom: 10px;">Select a program below to access your training modules and materials.</p>
+    <hr>
+
+    <div class="hub-grid">
+        <!-- IELTS Preparation -->
+        <div class="hub-card">
+            <img src="ielts.png" alt="IELTS Preparation" class="hub-image">
+            <div class="hub-content">
+                <h2><a href="./IELTS/language.html">IELTS Preparation</a></h2>
+                <p>Comprehensive training materials, vocabulary lists, practice tests, and strategic guides tailored for General Training and Academic modules.</p>
             </div>
         </div>
 
-        <hr>
-
-        <div class="subject-list" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-            <!-- English -->
-            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='english.html'">
-                <div style="font-size: 36px; min-width: 60px; text-align: center;">📖</div>
-                <div>
-                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">English</h2>
-                    <p style="margin: 0; color: var(--muted-color);">Master literature, grammar, writing skills, and comprehensive textual analysis for Grade 10.</p>
-                </div>
+        <!-- Learn French -->
+        <div class="hub-card">
+            <img src="french.png" alt="Learn French" class="hub-image">
+            <div class="hub-content">
+                <h2><a href="./French/language.html">Learn French</a></h2>
+                <p>Master French alphabets, foundational grammar rules, pronunciation audio tools, and essential daily vocabulary to build a strong linguistic base.</p>
             </div>
+        </div>
 
-            <!-- Hindi -->
-            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='hindi.html'">
-                <div style="font-size: 36px; min-width: 60px; text-align: center;">🇮🇳</div>
-                <div>
-                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Hindi</h2>
-                    <p style="margin: 0; color: var(--muted-color);">Explore prose, poetry, grammar rules, and expression exercises tailored for academic excellence.</p>
-                </div>
-            </div>
-
-            <!-- Science -->
-                <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='science.html'">
-                <div style="font-size: 36px; min-width: 60px; text-align: center;">🔬</div>
-                <div>
-                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">
-                        <a href="https://drive.google.com/drive/folders/1vBAyTaxAdYNls_57r8ExtYSj1Gn6G_OI">Science</a>
-                    </h2>
-                    <p style="margin: 0; color: var(--muted-color); font-size: 10pt;">Dive into Physics, Chemistry, and Biology experiments, key concepts, and structured problem-solving.</p>
-                </div>
-            </div>
-
-            <!-- Maths -->
-            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='maths.html'">
-                <div style="font-size: 36px; min-width: 60px; text-align: center;">📐</div>
-                <div>
-                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Maths</h2>
-                    <p style="margin: 0; color: var(--muted-color);">Strengthen mathematical reasoning, formulas, theorems, and practice problem sets across algebra and geometry.</p>
-                </div>
-            </div>
-
-            <!-- IT -->
-            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='it.html'">
-                <div style="font-size: 36px; min-width: 60px; text-align: center;">💻</div>
-                <div>
-                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Information Technology (IT)</h2>
-                    <p style="margin: 0; color: var(--muted-color);">Learn digital documentation, spreadsheet applications, database concepts, and fundamental programming.</p>
-                </div>
-            </div>
-
-            <!-- SST -->
-            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='sst.html'">
-                <div style="font-size: 36px; min-width: 60px; text-align: center;">🌍</div>
-                <div>
-                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Social Science (SST)</h2>
-                    <p style="margin: 0; color: var(--muted-color);">Understand History, Geography, Political Science, and Economics through comprehensive study modules.</p>
-                </div>
+        <!-- TCF/TEF Training -->
+        <div class="hub-card">
+            <img src="tcf.png" alt="TCF/TEF Training" class="hub-image">
+            <div class="hub-content">
+                <h2><a href="./French/language.html">TCF/TEF Training</a></h2>
+                <p>Focused preparation modules, practice exams, and targeted exercises designed specifically for official French proficiency tests (TCF and TEF).</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="master-config.js"></script>
-    <script src="restrictions.js"></script>
 </body>
 </html>
