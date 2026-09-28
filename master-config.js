@@ -15,7 +15,7 @@ window.IELTS_MASTER_CONFIG = {
     profileImage: "me.jpeg",     
 
     // 4. Fixed homepage
-    homePage: "./home.html",     // Homepage reference
+    homePage: "/home.html",     // Homepage reference
 
     // 5. Favicon Setting
     favicon: "logo1.png"         // Favicon image file path
