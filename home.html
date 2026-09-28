@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 10 - Learning Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cv-container">
+        <!-- Theme Switcher & Toolbar Icons -->
+        <div class="theme-switcher"></div>
+
+        <div class="cv-header">
+            <img src="me.jpeg" alt="Profile Image" class="profile-img">
+            <div>
+                <h1>Grade 10 Learning Hub</h1>
+                <p>Select a subject below to access your curriculum, study notes, practice tests, and modules.</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="subject-list" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+            <!-- English -->
+            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='english.html'">
+                <div style="font-size: 36px; min-width: 60px; text-align: center;">📖</div>
+                <div>
+                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">English</h2>
+                    <p style="margin: 0; color: var(--muted-color);">Master literature, grammar, writing skills, and comprehensive textual analysis for Grade 10.</p>
+                </div>
+            </div>
+
+            <!-- Hindi -->
+            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='hindi.html'">
+                <div style="font-size: 36px; min-width: 60px; text-align: center;">🇮🇳</div>
+                <div>
+                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Hindi</h2>
+                    <p style="margin: 0; color: var(--muted-color);">Explore prose, poetry, grammar rules, and expression exercises tailored for academic excellence.</p>
+                </div>
+            </div>
+
+            <!-- Science -->
+            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='science.html'">
+                <div style="font-size: 36px; min-width: 60px; text-align: center;">🔬</div>
+                <div>
+                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Science</h2>
+                    <p style="margin: 0; color: var(--muted-color);">Dive into Physics, Chemistry, and Biology experiments, key concepts, and structured problem-solving.</p>
+                </div>
+            </div>
+
+            <!-- Maths -->
+            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='maths.html'">
+                <div style="font-size: 36px; min-width: 60px; text-align: center;">📐</div>
+                <div>
+                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Maths</h2>
+                    <p style="margin: 0; color: var(--muted-color);">Strengthen mathematical reasoning, formulas, theorems, and practice problem sets across algebra and geometry.</p>
+                </div>
+            </div>
+
+            <!-- IT -->
+            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='it.html'">
+                <div style="font-size: 36px; min-width: 60px; text-align: center;">💻</div>
+                <div>
+                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Information Technology (IT)</h2>
+                    <p style="margin: 0; color: var(--muted-color);">Learn digital documentation, spreadsheet applications, database concepts, and fundamental programming.</p>
+                </div>
+            </div>
+
+            <!-- SST -->
+            <div class="subject-card" style="display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; background: var(--container-bg); gap: 20px; cursor: pointer; transition: transform 0.2s;" onclick="location.href='sst.html'">
+                <div style="font-size: 36px; min-width: 60px; text-align: center;">🌍</div>
+                <div>
+                    <h2 style="margin: 0 0 5px 0; border: none; padding: 0; font-size: 12pt;">Social Science (SST)</h2>
+                    <p style="margin: 0; color: var(--muted-color);">Understand History, Geography, Political Science, and Economics through comprehensive study modules.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="master-config.js"></script>
+    <script src="restrictions.js"></script>
+</body>
+</html>
