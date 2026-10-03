@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Lingual Vocabulary Coach</title>
+    <link rel="icon" type="image/png" href="logo1.png">
+    <!-- Tailwind CSS for UI components -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ==========================================
+           EMBEDDED STYLES & THEME VARIABLES
+           ================================---------- */
+        :root {
+            --app-bg: #EBF3FA;
+            --container-bg: #FFFFFF;
+            --text-color: #1A1A1A;
+            --border-color: #D0D7DE;
+            --muted-color: #57606A;
+        }
+
+        [data-theme="dark"] {
+            --app-bg: #121212;
+            --container-bg: #1E1E1E;
+            --text-color: #E0E0E0;
+            --border-color: #333333;
+            --muted-color: #8B949E;
+        }
+
+        body {
+            background-color: var(--app-bg);
+            color: var(--text-color);
+            font-family: Arial, Calibri, sans-serif;
+            margin: 0;
+            padding: 20px 10px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cv-container {
+            position: relative;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            padding: 2rem;
+            width: 100%;
+            max-width: 42rem;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            margin: 0;
+            text-align: right;
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .home-icon-link {
+            text-decoration: none;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 24px;
+            font-size: 18px;
+            transition: transform 0.2s ease;
+        }
+        .home-icon-link:hover {
+            transform: scale(1.1);
+        }
+
+        @media print {
+            body { background: white !important; padding: 0 !important; }
+            .theme-switcher { display: none !important; }
+            .cv-container { border: none !important; box-shadow: none !important; padding: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+    <script>
+        // ==========================================
+        // MASTER CONFIGURATION
+        // ==========================================
+        window.IELTS_MASTER_CONFIG = {
+            allowRightClick: false,
+            allowLeftClick: true,
+            allowScreenshot: false,
+            showDownloadIcon: true,
+            showThemeIcon: true,
+            homePage: "./home.html",
+            favicon: "logo1.png"
+        };
+    </script>
+</head>
+<body>
+
+    <div class="cv-container">
+        <!-- Theme Switcher & Toolbar Hooks -->
+        <div class="theme-switcher"></div>
+
+        <header class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-indigo-600">Vocabulary Coach</h1>
+            <p class="text-sm text-slate-500">Your daily multi-lingual learning assistant</p>
+        </header>
+
+        <!-- Onboarding Wizard -->
+        <div id="onboarding-container" class="space-y-6">
+            <div id="question-box" class="bg-indigo-50 border border-indigo-100 p-5 rounded-xl">
+                <h3 id="question-title" class="font-semibold text-lg text-indigo-900 mb-3"></h3>
+                <div id="input-container" class="space-y-3"></div>
+            </div>
+            <button id="next-btn" onclick="handleNext()" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-xl hover:bg-indigo-700 transition">Next Step</button>
+        </div>
+
+        <!-- Learning Dashboard (Hidden initially) -->
+        <div id="dashboard-container" class="hidden space-y-6">
+            <div class="flex justify-between items-center bg-slate-100 p-4 rounded-xl text-sm font-medium">
+                <span id="summary-lang" class="text-indigo-700"></span>
+                <span id="summary-level" class="bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full"></span>
+            </div>
+
+            <!-- Session Tabs -->
+            <div class="flex border-b border-slate-200 space-x-4">
+                <button onclick="switchSession('morning')" id="tab-morning" class="pb-2 font-semibold text-indigo-600 border-b-2 border-indigo-600">Morning</button>
+                <button onclick="switchSession('afternoon')" id="tab-afternoon" class="pb-2 font-semibold text-slate-400 hover:text-slate-600">Afternoon</button>
+                <button onclick="switchSession('evening')" id="tab-evening" class="pb-2 font-semibold text-slate-400 hover:text-slate-600">Evening</button>
+            </div>
+
+            <!-- Session Content -->
+            <div id="session-content" class="space-y-6"></div>
+
+            <button onclick="resetApp()" class="w-full bg-slate-200 text-slate-700 font-medium py-3 rounded-xl hover:bg-slate-300 transition mt-6">Start New Session</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // RESTRICTIONS & TOOLBAR SETUP (restrictions.js)
+        // ==========================================
+        const restrictionMessage = "This action is restricted, please contact admin for more details.";
+        let isInternalAction = false;
+
+        function getConfig() {
+            return window.IELTS_MASTER_CONFIG || window.CV_MASTER_CONFIG || window.MASTER_CONFIG || {};
+        }
+
+        function updateThemeButton() {
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            if (themeBtn) {
+                const currentTheme = document.body.getAttribute("data-theme") || "light";
+                if (currentTheme === "dark") {
+                    themeBtn.style.backgroundImage = "url('LightBulb.jpeg?v=2026')";
+                } else {
+                    themeBtn.style.backgroundImage = "url('DarkBulb.jpeg?v=2026')";
+                }
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const html = document.documentElement;
+            const currentTheme = body.getAttribute("data-theme") || "light";
+            const newTheme = currentTheme === "light" ? "dark" : "light";
+            
+            body.setAttribute("data-theme", newTheme);
+            html.setAttribute("data-theme", newTheme);
+            
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            if (themeBtn) {
+                themeBtn.style.backgroundImage = 'none';
+            }
+            
+            setTimeout(() => {
+                updateThemeButton();
+            }, 50);
+        }
+
+        function downloadPDF() {
+            isInternalAction = true;
+            window.print();
+            setTimeout(() => {
+                isInternalAction = false;
+            }, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const config = getConfig();
+            const switcher = document.querySelector('.cv-container .theme-switcher') || document.querySelector('.theme-switcher');
+            
+            if (switcher) {
+                switcher.innerHTML = '';
+                
+                const baseButtonStyle = (btn) => {
+                    btn.type = 'button';
+                    btn.style.backgroundSize = '20px 20px';
+                    btn.style.backgroundRepeat = 'no-repeat';
+                    btn.style.backgroundPosition = 'center';
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.border = 'none';
+                    btn.style.outline = 'none';
+                    btn.style.boxShadow = 'none';
+                    btn.style.cursor = 'pointer';
+                    btn.style.width = '24px';
+                    btn.style.height = '24px';
+                    btn.style.padding = '0';
+                    btn.style.margin = '0 4px';
+                    btn.style.display = 'inline-block';
+                    btn.style.verticalAlign = 'middle';
+                };
+
+                if (!document.body.hasAttribute("data-theme")) {
+                    document.body.setAttribute("data-theme", "light");
+                    document.documentElement.setAttribute("data-theme", "light");
+                }
+
+                // Home Icon Button
+                const homeUrl = config.homePage || 'home.html';
+                const homeLink = document.createElement('a');
+                homeLink.href = homeUrl;
+                homeLink.className = 'home-icon-link';
+                homeLink.title = 'Return to Learning Hub';
+                homeLink.innerHTML = '🏠';
+                baseButtonStyle(homeLink);
+                switcher.appendChild(homeLink);
+
+                // Theme Toggle Button
+                if (config.showThemeIcon !== false) {
+                    const themeBtn = document.createElement('button');
+                    themeBtn.id = 'theme-toggle-btn';
+                    baseButtonStyle(themeBtn);
+                    themeBtn.onclick = toggleTheme;
+                    themeBtn.title = "Toggle Theme";
+                    switcher.appendChild(themeBtn);
+                    updateThemeButton();
+                }
+                
+                // Download PDF Button
+                if (config.showDownloadIcon === true) {
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.id = 'download-pdf-btn';
+                    baseButtonStyle(downloadBtn);
+                    downloadBtn.onclick = downloadPDF;
+                    downloadBtn.title = "Download PDF";
+                    downloadBtn.style.backgroundImage = "url('Download.jpeg?v=2026')";
+                    switcher.appendChild(downloadBtn);
+                }
+            }
+        });
+
+        // Security Event Listeners
+        document.addEventListener('contextmenu', function(e) {
+            const config = getConfig();
+            if (!config.allowRightClick) {
+                e.preventDefault();
+                alert(restrictionMessage);
+            }
+        });
+
+        document.addEventListener('copy', function(e) {
+            const config = getConfig();
+            if (!config.allowRightClick) {
+                e.preventDefault();
+                alert(restrictionMessage);
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const config = getConfig();
+            if (isInternalAction) return;
+            if (config.allowScreenshot) return;
+
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'P' || e.key === 'S' || e.key === 'U')) {
+                e.preventDefault();
+                alert(restrictionMessage);
+            }
+            
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                e.preventDefault();
+                navigator.clipboard.writeText('');
+                alert(restrictionMessage);
+            }
+
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))) {
+                e.preventDefault();
+                alert(restrictionMessage);
+            }
+        });
+
+        // ==========================================
+        // VOCABULARY COACH APP LOGIC
+        // ==========================================
+        const steps = [
+            { key: "language", title: "1. Which language would you like to learn words in today?", type: "select", options: ["English", "French", "German", "Spanish", "Hindi", "Punjabi"] },
+            { key: "level", title: "2. What is your proficiency or difficulty level?", type: "select", options: ["Beginner", "Intermediate", "Advanced"] },
+            { key: "count", title: "3. How many total new parent words would you like to learn today? (Will be split into Morning, Afternoon, Evening)", type: "number", default: 6 },
+            { key: "theme", title: "4. Which category or theme of words would you like to focus on?", type: "text", placeholder: "e.g., Daily conversational, Professional, Travel" }
+        ];
+
+        let currentStep = 0;
+        let userData = {};
+        let vocabularyData = {};
+
+        function renderQuestion() {
+            if (currentStep >= steps.length) {
+                generateVocabulary();
+                return;
+            }
+            const step = steps[currentStep];
+            document.getElementById("question-title").innerText = step.title;
+            const container = document.getElementById("input-container");
+            container.innerHTML = "";
+
+            if (step.type === "select") {
+                const select = document.createElement("select");
+                select.id = "user-input";
+                select.className = "w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800";
+                step.options.forEach(opt => {
+                    const el = document.createElement("option");
+                    el.value = opt;
+                    el.textContent = opt;
+                    select.appendChild(el);
+                });
+                container.appendChild(select);
+            } else if (step.type === "number") {
+                const input = document.createElement("input");
+                input.type = "number";
+                input.id = "user-input";
+                input.value = step.default;
+                input.min = 3;
+                input.max = 15;
+                input.className = "w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800";
+                container.appendChild(input);
+            } else {
+                const input = document.createElement("input");
+                input.type = "text";
+                input.id = "user-input";
+                input.placeholder = step.placeholder;
+                input.className = "w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800";
+                container.appendChild(input);
+            }
+        }
+
+        function handleNext() {
+            const input = document.getElementById("user-input");
+            const step = steps[currentStep];
+            userData[step.key] = input.value;
+            currentStep++;
+            renderQuestion();
+        }
+
+        function speakText(text, langCode = 'en-US') {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = langCode;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech synthesis not supported in this browser.");
+            }
+        }
+
+        function generateVocabulary() {
+            document.getElementById("onboarding-container").classList.add("hidden");
+            document.getElementById("dashboard-container").classList.remove("hidden");
+            document.getElementById("summary-lang").innerText = `Language: ${userData.language} | Theme: ${userData.theme}`;
+            document.getElementById("summary-level").innerText = userData.level;
+
+            const count = parseInt(userData.count) || 6;
+            const perSession = Math.max(1, Math.floor(count / 3));
+
+            vocabularyData = {
+                morning: createMockWords(perSession, userData.language),
+                afternoon: createMockWords(perSession, userData.language),
+                evening: createMockWords(perSession, userData.language)
+            };
+
+            switchSession('morning');
+        }
+
+        function createMockWords(num, lang) {
+            let list = [];
+            for (let i = 1; i <= num; i++) {
+                list.push({
+                    word: `${lang} Word ${i}`,
+                    phonetic: `[phonetic-${i}]`,
+                    pos: "Noun / संज्ञा",
+                    meaning: "English Meaning | हिंदी अर्थ",
+                    example: "Example sentence in target language. | हिंदी अनुवाद.",
+                    synonyms: [
+                        { word: `Synonym A${i}`, phonetic: `[phon-a${i}]`, pos: "Noun / संज्ञा", meaning: "Meaning | अर्थ", example: "Example | उदाहरण" },
+                        { word: `Synonym B${i}`, phonetic: `[phon-b${i}]`, pos: "Noun / संज्ञा", meaning: "Meaning | अर्थ", example: "Example | उदाहरण" }
+                    ]
+                });
+            }
+            return list;
+        }
+
+        function switchSession(sessionName) {
+            ['morning', 'afternoon', 'evening'].forEach(s => {
+                const btn = document.getElementById(`tab-${s}`);
+                if (s === sessionName) {
+                    btn.className = "pb-2 font-semibold text-indigo-600 border-b-2 border-indigo-600";
+                } else {
+                    btn.className = "pb-2 font-semibold text-slate-400 hover:text-slate-600";
+                }
+            });
+
+            const content = document.getElementById("session-content");
+            content.innerHTML = "";
+
+            vocabularyData[sessionName].forEach((item, idx) => {
+                const card = document.createElement("div");
+                card.className = "border border-slate-200 dark:border-slate-700 rounded-xl p-5 bg-slate-50 dark:bg-slate-800 space-y-4";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-xl font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2 border-none pb-0">
+                                ${item.word} 
+                                <button onclick="speakText('${item.word}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 text-lg">🔊</button>
+                            </h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Pronunciation: ${item.phonetic}</p>
+                        </div>
+                        <span class="text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 px-2 py-1 rounded font-medium">${item.pos}</span>
+                    </div>
+                    <div class="text-sm space-y-1">
+                        <p><strong>Meaning:</strong> ${item.meaning}</p>
+                        <p class="text-slate-600 dark:text-slate-300 italic"><strong>Example:</strong> ${item.example}</p>
+                    </div>
+                    <div class="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Synonyms</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${item.synonyms.map(syn => `
+                                <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700 text-xs space-y-1">
+                                    <div class="font-semibold text-indigo-800 dark:text-indigo-300 flex items-center justify-between">
+                                        <span>${syn.word}</span>
+                                        <button onclick="speakText('${syn.word}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800">🔊</button>
+                                    </div>
+                                    <div>${syn.meaning}</div>
+                                    <div class="text-slate-500 dark:text-slate-400 italic">${syn.example}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                content.appendChild(card);
+            });
+        }
+
+        function resetApp() {
+            currentStep = 0;
+            userData = {};
+            document.getElementById("dashboard-container").classList.add("hidden");
+            document.getElementById("onboarding-container").classList.remove("hidden");
+            renderQuestion();
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
