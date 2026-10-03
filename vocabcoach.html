@@ -4,401 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Lingual Vocabulary Coach</title>
-    <link rel="icon" type="image/png" href="logo1.png">
-    <!-- Tailwind CSS for UI components -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* ==========================================
-           EMBEDDED STYLES & THEME VARIABLES
-           ================================---------- */
-        :root {
-            --app-bg: #EBF3FA;
-            --container-bg: #FFFFFF;
-            --text-color: #1A1A1A;
-            --border-color: #D0D7DE;
-            --muted-color: #57606A;
-        }
-
-        [data-theme="dark"] {
-            --app-bg: #121212;
-            --container-bg: #1E1E1E;
-            --text-color: #E0E0E0;
-            --border-color: #333333;
-            --muted-color: #8B949E;
-        }
-
-        body {
-            background-color: var(--app-bg);
-            color: var(--text-color);
-            font-family: Arial, Calibri, sans-serif;
-            margin: 0;
-            padding: 20px 10px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cv-container {
-            position: relative;
-            background-color: var(--container-bg);
-            color: var(--text-color);
-            padding: 2rem;
-            width: 100%;
-            max-width: 42rem;
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .theme-switcher {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            margin: 0;
-            text-align: right;
-            z-index: 10;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .home-icon-link {
-            text-decoration: none;
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            line-height: 24px;
-            font-size: 18px;
-            transition: transform 0.2s ease;
-        }
-        .home-icon-link:hover {
-            transform: scale(1.1);
-        }
-
-        @media print {
-            body { background: white !important; padding: 0 !important; }
-            .theme-switcher { display: none !important; }
-            .cv-container { border: none !important; box-shadow: none !important; padding: 0 !important; max-width: 100% !important; }
-        }
-    </style>
-    <script>
-        // ==========================================
-        // MASTER CONFIGURATION
-        // ==========================================
-        window.IELTS_MASTER_CONFIG = {
-            allowRightClick: false,
-            allowLeftClick: true,
-            allowScreenshot: false,
-            showDownloadIcon: true,
-            showThemeIcon: true,
-            homePage: "./home.html",
-            favicon: "logo1.png"
-        };
-    </script>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center py-10 px-4">
 
-    <div class="cv-container">
-        <!-- Theme Switcher & Toolbar Hooks -->
-        <div class="theme-switcher"></div>
-
+    <div class="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-6 md:p-8">
         <header class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-indigo-600">Vocabulary Coach</h1>
-            <p class="text-sm text-slate-500">Your daily multi-lingual learning assistant</p>
+            <h1 class="text-2xl font-bold text-indigo-600">Multi-Lingual Vocabulary Coach</h1>
+            <p class="text-sm text-slate-500">Master new words daily across morning, afternoon, and evening sessions</p>
         </header>
 
-        <!-- Onboarding Wizard -->
-        <div id="onboarding-container" class="space-y-6">
-            <div id="question-box" class="bg-indigo-50 border border-indigo-100 p-5 rounded-xl">
-                <h3 id="question-title" class="font-semibold text-lg text-indigo-900 mb-3"></h3>
-                <div id="input-container" class="space-y-3"></div>
+        <!-- Onboarding Form (All on One Page, No Defaults) -->
+        <div id="onboarding-form" class="space-y-4 bg-indigo-50/40 border border-indigo-100 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg text-indigo-900 mb-2">Session Configuration</h3>
+            
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">1. Which language would you like to learn words in today?</label>
+                <select id="lang-select" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="English">English</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Punjabi">Punjabi</option>
+                </select>
             </div>
-            <button id="next-btn" onclick="handleNext()" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-xl hover:bg-indigo-700 transition">Next Step</button>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">2. What is your proficiency or difficulty level?</label>
+                <select id="level-select" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">3. How many total new parent words would you like to learn today? (Splits into Morning, Afternoon, Evening)</label>
+                <input type="number" id="word-count" min="3" max="15" value="6" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">4. Which category or theme of words would you like to focus on?</label>
+                <input type="text" id="theme-input" placeholder="e.g., Daily conversational, Professional, Travel" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <button onclick="startLearning()" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-xl hover:bg-indigo-700 transition shadow-md">Generate Vocabulary</button>
         </div>
 
-        <!-- Learning Dashboard (Hidden initially) -->
+        <!-- Learning Dashboard (Hidden Initially) -->
         <div id="dashboard-container" class="hidden space-y-6">
             <div class="flex justify-between items-center bg-slate-100 p-4 rounded-xl text-sm font-medium">
-                <span id="summary-lang" class="text-indigo-700"></span>
-                <span id="summary-level" class="bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full"></span>
+                <span id="summary-info" class="text-indigo-700"></span>
+                <button onclick="resetApp()" class="text-xs bg-white border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50 font-medium">Change Settings</button>
             </div>
 
             <!-- Session Tabs -->
             <div class="flex border-b border-slate-200 space-x-4">
-                <button onclick="switchSession('morning')" id="tab-morning" class="pb-2 font-semibold text-indigo-600 border-b-2 border-indigo-600">Morning</button>
-                <button onclick="switchSession('afternoon')" id="tab-afternoon" class="pb-2 font-semibold text-slate-400 hover:text-slate-600">Afternoon</button>
-                <button onclick="switchSession('evening')" id="tab-evening" class="pb-2 font-semibold text-slate-400 hover:text-slate-600">Evening</button>
+                <button onclick="switchSession('morning')" id="tab-morning" class="pb-2 font-semibold text-indigo-600 border-b-2 border-indigo-600">Morning Session</button>
+                <button onclick="switchSession('afternoon')" id="tab-afternoon" class="pb-2 font-semibold text-slate-400 hover:text-slate-600">Afternoon Session</button>
+                <button onclick="switchSession('evening')" id="tab-evening" class="pb-2 font-semibold text-slate-400 hover:text-slate-600">Evening Session</button>
             </div>
 
             <!-- Session Content -->
             <div id="session-content" class="space-y-6"></div>
-
-            <button onclick="resetApp()" class="w-full bg-slate-200 text-slate-700 font-medium py-3 rounded-xl hover:bg-slate-300 transition mt-6">Start New Session</button>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // RESTRICTIONS & TOOLBAR SETUP (restrictions.js)
-        // ==========================================
-        const restrictionMessage = "This action is restricted, please contact admin for more details.";
-        let isInternalAction = false;
-
-        function getConfig() {
-            return window.IELTS_MASTER_CONFIG || window.CV_MASTER_CONFIG || window.MASTER_CONFIG || {};
-        }
-
-        function updateThemeButton() {
-            const themeBtn = document.getElementById('theme-toggle-btn');
-            if (themeBtn) {
-                const currentTheme = document.body.getAttribute("data-theme") || "light";
-                if (currentTheme === "dark") {
-                    themeBtn.style.backgroundImage = "url('LightBulb.jpeg?v=2026')";
-                } else {
-                    themeBtn.style.backgroundImage = "url('DarkBulb.jpeg?v=2026')";
+        // Rich vocabulary repository mirroring your desired structure
+        const vocabularyBank = {
+            English: [
+                {
+                    word: "Joy", phonetic: "/dʒɔɪ/ (जॉय)", pos: "Noun (संज्ञा)",
+                    meaning: "A feeling of great happiness | बहुत खुशी या आनंद का अहसास",
+                    example: "Playing with children brings great joy. | बच्चों के साथ खेलने से बहुत खुशी मिलती है।",
+                    synonyms: [
+                        { word: "Happiness", phonetic: "/ˈhæp.i.nəs/ (हैप्पीनेस)", pos: "Noun (संज्ञा)", meaning: "The state of being happy | प्रसन्नता या सुख", example: "Her smile was full of happiness. | उसकी मुस्कान खुशी से भरी थी।" },
+                        { word: "Delight", phonetic: "/dɪˈlaɪt/ (डिलाइट)", pos: "Noun (संज्ञा)", meaning: "High degree of pleasure or enjoyment | अत्यधिक आनंद", example: "The magic show was a pure delight. | जादू का शो शुद्ध आनंद था।" }
+                    ]
+                },
+                {
+                    word: "Courage", phonetic: "/ˈkʌr.ɪdʒ/ (करेज)", pos: "Noun (संज्ञा)",
+                    meaning: "The ability to do something that frightens one; bravery | साहस या हिम्मत",
+                    example: "It takes courage to speak the truth. | सच बोलने के लिए साहस की जरूरत होती है।",
+                    synonyms: [
+                        { word: "Bravery", phonetic: "/ˈbreɪ.vər.i/ (ब्रेवरी)", pos: "Noun (संज्ञा)", meaning: "Courageous behavior or character | बहादुरी", example: "The soldier showed great bravery in battle. | सैनिक ने युद्ध में महान बहादुरी दिखाई।" },
+                        { word: "Valor", phonetic: "/ˈvæl.ər/ (वैलर)", pos: "Noun (संज्ञा)", meaning: "Great courage in the face of danger | वीरता", example: "He was awarded a medal for his valor. | उन्हें उनकी वीरता के लिए पदक से सम्मानित किया गया।" }
+                    ]
+                },
+                {
+                    word: "Diligent", phonetic: "/ˈdɪl.ɪ.dʒənt/ (डिलिजेंट)", pos: "Adjective (विशेषण)",
+                    meaning: "Having or showing care and conscientiousness in work | मेहनती या परिश्रमी",
+                    example: "She is a diligent student who completes her homework. | वह एक मेहनती छात्रा है जो अपना गृहकार्य पूरा करती है।",
+                    synonyms: [
+                        { word: "Hardworking", phonetic: "/ˈhɑːrdˌwɜːr.kɪŋ/ (हार्डवर्किंग)", pos: "Adjective (विशेषण)", meaning: "Tending to work with energy | मेहनती", example: "He is a hardworking employee. | वह एक मेहनती कर्मचारी है।" },
+                        { word: "Industrious", phonetic: "/ɪnˈdʌs.tri.əs/ (इंडस्ट्रियस)", pos: "Adjective (विशेषण)", meaning: "Diligent and hard-working | उद्यमी / कर्मठ", example: "An industrious person achieves success quickly. | एक कर्मठ व्यक्ति जल्दी सफलता प्राप्त करता है।" }
+                    ]
+                },
+                {
+                    word: "Eloquent", phonetic: "/ˈel.ə.kwənt/ (एलोक्वेंट)", pos: "Adjective (विशेषण)",
+                    meaning: "Fluent or persuasive in speaking or writing | सुवक्ता या स्पष्टवादी",
+                    example: "Her eloquent speech touched everyone's heart. | उनके ओजस्वी भाषण ने सभी का दिल जीत लिया।",
+                    synonyms: [
+                        { word: "Articulate", phonetic: "/ɑːrˈtɪk.ju.lət/ (आर्टिकुलेट)", pos: "Adjective (विशेषण)", meaning: "Able to speak fluently and coherently | स्पष्ट बोलने वाला", example: "He is very articulate during meetings. | वह बैठकों के दौरान बहुत स्पष्ट बोलते हैं।" },
+                        { word: "Expressive", phonetic: "/ɪkˈspres.ɪv/ (एक्सप्रेसिव)", pos: "Adjective (विशेषण)", meaning: "Effectively conveying thought or feeling | भावपूर्ण", example: "Her eyes were deeply expressive. | उनकी आँखें अत्यधिक भावपूर्ण थीं।" }
+                    ]
+                },
+                {
+                    word: "Resilient", phonetic: "/rɪˈzɪl.jənt/ (रेजिलिएंट)", pos: "Adjective (विशेषण)",
+                    meaning: "Able to withstand or recover quickly from difficult conditions | लचीला",
+                    example: "Small businesses need to be resilient to survive. | छोटे व्यवसायों को जीवित रहने के लिए लचीला होना चाहिए।",
+                    synonyms: [
+                        { word: "Tough", phonetic: "/tʌf/ (टफ)", pos: "Adjective (विशेषण)", meaning: "Strong enough to withstand adverse conditions | मजबूत", example: "We need to stay tough during hard times. | हमें कठिन समय में मजबूत रहना होगा।" },
+                        { word: "Adaptable", phonetic: "/əˈdæp.tə.bəl/ (अडैप्टेबल)", pos: "Adjective (विशेषण)", meaning: "Able to adjust to new conditions | अनुकूलनीय", example: "An adaptable worker succeeds anywhere. | एक अनुकूलनीय कर्मचारी कहीं भी सफल होता है।" }
+                    ]
+                },
+                {
+                    word: "Benevolent", phonetic: "/bəˈnev.ə.lənt/ (बिनेवोलेंट)", pos: "Adjective (विशेषण)",
+                    meaning: "Well meaning and kindly | परोपकारी या दयालु",
+                    example: "The benevolent donor funded the entire project. | परोपकारी दाता ने पूरी परियोजना को वित्त पोषित किया।",
+                    synonyms: [
+                        { word: "Kind", phonetic: "/kaɪnd/ (काइइंड)", pos: "Adjective (विशेषण)", meaning: "Having a friendly and generous nature | दयालु", example: "She is a very kind neighbor. | वह बहुत दयालु पड़ोसी हैं।" },
+                        { word: "Generous", phonetic: "/ˈdʒen.ər.əs/ (जेनरस)", pos: "Adjective (विशेषण)", meaning: "Showing readiness to give more than expected | उदार", example: "He made a generous donation. | उन्होंने एक उदार दान दिया।" }
+                    ]
                 }
-            }
-        }
+            ]
+        };
 
-        function toggleTheme() {
-            const body = document.body;
-            const html = document.documentElement;
-            const currentTheme = body.getAttribute("data-theme") || "light";
-            const newTheme = currentTheme === "light" ? "dark" : "light";
-            
-            body.setAttribute("data-theme", newTheme);
-            html.setAttribute("data-theme", newTheme);
-            
-            const themeBtn = document.getElementById('theme-toggle-btn');
-            if (themeBtn) {
-                themeBtn.style.backgroundImage = 'none';
-            }
-            
-            setTimeout(() => {
-                updateThemeButton();
-            }, 50);
-        }
-
-        function downloadPDF() {
-            isInternalAction = true;
-            window.print();
-            setTimeout(() => {
-                isInternalAction = false;
-            }, 1000);
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const config = getConfig();
-            const switcher = document.querySelector('.cv-container .theme-switcher') || document.querySelector('.theme-switcher');
-            
-            if (switcher) {
-                switcher.innerHTML = '';
-                
-                const baseButtonStyle = (btn) => {
-                    btn.type = 'button';
-                    btn.style.backgroundSize = '20px 20px';
-                    btn.style.backgroundRepeat = 'no-repeat';
-                    btn.style.backgroundPosition = 'center';
-                    btn.style.backgroundColor = 'transparent';
-                    btn.style.border = 'none';
-                    btn.style.outline = 'none';
-                    btn.style.boxShadow = 'none';
-                    btn.style.cursor = 'pointer';
-                    btn.style.width = '24px';
-                    btn.style.height = '24px';
-                    btn.style.padding = '0';
-                    btn.style.margin = '0 4px';
-                    btn.style.display = 'inline-block';
-                    btn.style.verticalAlign = 'middle';
-                };
-
-                if (!document.body.hasAttribute("data-theme")) {
-                    document.body.setAttribute("data-theme", "light");
-                    document.documentElement.setAttribute("data-theme", "light");
-                }
-
-                // Home Icon Button
-                const homeUrl = config.homePage || 'home.html';
-                const homeLink = document.createElement('a');
-                homeLink.href = homeUrl;
-                homeLink.className = 'home-icon-link';
-                homeLink.title = 'Return to Learning Hub';
-                homeLink.innerHTML = '🏠';
-                baseButtonStyle(homeLink);
-                switcher.appendChild(homeLink);
-
-                // Theme Toggle Button
-                if (config.showThemeIcon !== false) {
-                    const themeBtn = document.createElement('button');
-                    themeBtn.id = 'theme-toggle-btn';
-                    baseButtonStyle(themeBtn);
-                    themeBtn.onclick = toggleTheme;
-                    themeBtn.title = "Toggle Theme";
-                    switcher.appendChild(themeBtn);
-                    updateThemeButton();
-                }
-                
-                // Download PDF Button
-                if (config.showDownloadIcon === true) {
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.id = 'download-pdf-btn';
-                    baseButtonStyle(downloadBtn);
-                    downloadBtn.onclick = downloadPDF;
-                    downloadBtn.title = "Download PDF";
-                    downloadBtn.style.backgroundImage = "url('Download.jpeg?v=2026')";
-                    switcher.appendChild(downloadBtn);
-                }
-            }
-        });
-
-        // Security Event Listeners
-        document.addEventListener('contextmenu', function(e) {
-            const config = getConfig();
-            if (!config.allowRightClick) {
-                e.preventDefault();
-                alert(restrictionMessage);
-            }
-        });
-
-        document.addEventListener('copy', function(e) {
-            const config = getConfig();
-            if (!config.allowRightClick) {
-                e.preventDefault();
-                alert(restrictionMessage);
-            }
-        });
-
-        document.addEventListener('keydown', function(e) {
-            const config = getConfig();
-            if (isInternalAction) return;
-            if (config.allowScreenshot) return;
-
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'P' || e.key === 'S' || e.key === 'U')) {
-                e.preventDefault();
-                alert(restrictionMessage);
-            }
-            
-            if (e.key === 'PrintScreen' || e.keyCode === 44) {
-                e.preventDefault();
-                navigator.clipboard.writeText('');
-                alert(restrictionMessage);
-            }
-
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))) {
-                e.preventDefault();
-                alert(restrictionMessage);
-            }
-        });
-
-        // ==========================================
-        // VOCABULARY COACH APP LOGIC
-        // ==========================================
-        const steps = [
-            { key: "language", title: "1. Which language would you like to learn words in today?", type: "select", options: ["English", "French", "German", "Spanish", "Hindi", "Punjabi"] },
-            { key: "level", title: "2. What is your proficiency or difficulty level?", type: "select", options: ["Beginner", "Intermediate", "Advanced"] },
-            { key: "count", title: "3. How many total new parent words would you like to learn today? (Will be split into Morning, Afternoon, Evening)", type: "number", default: 6 },
-            { key: "theme", title: "4. Which category or theme of words would you like to focus on?", type: "text", placeholder: "e.g., Daily conversational, Professional, Travel" }
-        ];
-
-        let currentStep = 0;
-        let userData = {};
         let vocabularyData = {};
 
-        function renderQuestion() {
-            if (currentStep >= steps.length) {
-                generateVocabulary();
+        function startLearning() {
+            const lang = document.getElementById("lang-select").value;
+            const level = document.getElementById("level-select").value;
+            const count = parseInt(document.getElementById("word-count")).value || 6;
+            const theme = document.getElementById("theme-input").value || "General Vocabulary";
+
+            // Validate selections
+            if (!lang || !level) {
+                alert("Please select both a Language and a Difficulty Level before proceeding.");
                 return;
             }
-            const step = steps[currentStep];
-            document.getElementById("question-title").innerText = step.title;
-            const container = document.getElementById("input-container");
-            container.innerHTML = "";
 
-            if (step.type === "select") {
-                const select = document.createElement("select");
-                select.id = "user-input";
-                select.className = "w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800";
-                step.options.forEach(opt => {
-                    const el = document.createElement("option");
-                    el.value = opt;
-                    el.textContent = opt;
-                    select.appendChild(el);
-                });
-                container.appendChild(select);
-            } else if (step.type === "number") {
-                const input = document.createElement("input");
-                input.type = "number";
-                input.id = "user-input";
-                input.value = step.default;
-                input.min = 3;
-                input.max = 15;
-                input.className = "w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800";
-                container.appendChild(input);
-            } else {
-                const input = document.createElement("input");
-                input.type = "text";
-                input.id = "user-input";
-                input.placeholder = step.placeholder;
-                input.className = "w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800";
-                container.appendChild(input);
-            }
-        }
-
-        function handleNext() {
-            const input = document.getElementById("user-input");
-            const step = steps[currentStep];
-            userData[step.key] = input.value;
-            currentStep++;
-            renderQuestion();
-        }
-
-        function speakText(text, langCode = 'en-US') {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = langCode;
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert("Speech synthesis not supported in this browser.");
-            }
-        }
-
-        function generateVocabulary() {
-            document.getElementById("onboarding-container").classList.add("hidden");
+            document.getElementById("onboarding-form").classList.add("hidden");
             document.getElementById("dashboard-container").classList.remove("hidden");
-            document.getElementById("summary-lang").innerText = `Language: ${userData.language} | Theme: ${userData.theme}`;
-            document.getElementById("summary-level").innerText = userData.level;
+            document.getElementById("summary-info").innerText = `Language: ${lang} | Level: ${level} | Theme: ${theme}`;
 
-            const count = parseInt(userData.count) || 6;
-            const perSession = Math.max(1, Math.floor(count / 3));
+            // Fetch words (fall back to English bank if specific language array isn't fully populated yet)
+            let pool = [...(vocabularyBank[lang] || vocabularyBank["English"])];
+            
+            // Randomize array to avoid repetitions
+            pool.sort(() => Math.random() - 0.5);
 
+            const totalWordsNeeded = Math.min(count, pool.length);
+            const selectedWords = pool.slice(0, totalWordsNeeded);
+
+            // Split into 3 equal sessions (Morning, Afternoon, Evening)
+            const chunkSize = Math.ceil(selectedWords.length / 3);
             vocabularyData = {
-                morning: createMockWords(perSession, userData.language),
-                afternoon: createMockWords(perSession, userData.language),
-                evening: createMockWords(perSession, userData.language)
+                morning: selectedWords.slice(0, chunkSize),
+                afternoon: selectedWords.slice(chunkSize, chunkSize * 2),
+                evening: selectedWords.slice(chunkSize * 2)
             };
 
             switchSession('morning');
         }
 
-        function createMockWords(num, lang) {
-            let list = [];
-            for (let i = 1; i <= num; i++) {
-                list.push({
-                    word: `${lang} Word ${i}`,
-                    phonetic: `[phonetic-${i}]`,
-                    pos: "Noun / संज्ञा",
-                    meaning: "English Meaning | हिंदी अर्थ",
-                    example: "Example sentence in target language. | हिंदी अनुवाद.",
-                    synonyms: [
-                        { word: `Synonym A${i}`, phonetic: `[phon-a${i}]`, pos: "Noun / संज्ञा", meaning: "Meaning | अर्थ", example: "Example | उदाहरण" },
-                        { word: `Synonym B${i}`, phonetic: `[phon-b${i}]`, pos: "Noun / संज्ञा", meaning: "Meaning | अर्थ", example: "Example | उदाहरण" }
-                    ]
-                });
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Text-to-speech not supported in this browser.");
             }
-            return list;
         }
 
         function switchSession(sessionName) {
@@ -414,36 +195,46 @@
             const content = document.getElementById("session-content");
             content.innerHTML = "";
 
-            vocabularyData[sessionName].forEach((item, idx) => {
+            const wordsList = vocabularyData[sessionName] || [];
+            if (wordsList.length === 0) {
+                content.innerHTML = `<p class="text-slate-500 text-center py-6">No words assigned for this session.</p>`;
+                return;
+            }
+
+            wordsList.forEach((item, idx) => {
                 const card = document.createElement("div");
-                card.className = "border border-slate-200 dark:border-slate-700 rounded-xl p-5 bg-slate-50 dark:bg-slate-800 space-y-4";
+                card.className = "border border-slate-200 rounded-xl p-5 bg-slate-50 space-y-4 shadow-sm";
                 
                 card.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div>
-                            <h2 class="text-xl font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2 border-none pb-0">
+                            <h2 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
                                 ${item.word} 
-                                <button onclick="speakText('${item.word}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 text-lg">🔊</button>
+                                <button onclick="speakText('${item.word}')" class="text-indigo-600 hover:text-indigo-800 text-lg cursor-pointer" title="Listen">🔊</button>
                             </h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Pronunciation: ${item.phonetic}</p>
+                            <p class="text-xs text-slate-500 mt-0.5"><strong>Pronunciation / Phonetic Guide:</strong> ${item.phonetic}</p>
                         </div>
-                        <span class="text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 px-2 py-1 rounded font-medium">${item.pos}</span>
+                        <span class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full font-medium">${item.pos}</span>
                     </div>
-                    <div class="text-sm space-y-1">
+                    
+                    <div class="text-sm space-y-1.5 pt-1">
                         <p><strong>Meaning:</strong> ${item.meaning}</p>
-                        <p class="text-slate-600 dark:text-slate-300 italic"><strong>Example:</strong> ${item.example}</p>
+                        <p class="text-slate-600 italic"><strong>Example Sentence:</strong> ${item.example}</p>
                     </div>
-                    <div class="border-t border-slate-200 dark:border-slate-700 pt-3 space-y-3">
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Synonyms</h4>
+
+                    <div class="border-t border-slate-200 pt-3 space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Synonyms & Details:</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            ${item.synonyms.map(syn => `
-                                <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700 text-xs space-y-1">
-                                    <div class="font-semibold text-indigo-800 dark:text-indigo-300 flex items-center justify-between">
-                                        <span>${syn.word}</span>
-                                        <button onclick="speakText('${syn.word}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800">🔊</button>
+                            ${item.synonyms.map((syn, sIdx) => `
+                                <div class="bg-white p-3.5 rounded-lg border border-slate-200 text-xs space-y-1.5 shadow-xs">
+                                    <div class="font-semibold text-indigo-800 flex items-center justify-between">
+                                        <span>${sIdx + 1}.${syn.word}</span>
+                                        <button onclick="speakText('${syn.word}')" class="text-indigo-600 hover:text-indigo-800 cursor-pointer" title="Listen">🔊</button>
                                     </div>
-                                    <div>${syn.meaning}</div>
-                                    <div class="text-slate-500 dark:text-slate-400 italic">${syn.example}</div>
+                                    <div><strong>Phonetic:</strong> ${syn.phonetic}</div>
+                                    <div><strong>Part of Speech:</strong> ${syn.pos}</div>
+                                    <div><strong>Meaning:</strong> ${syn.meaning}</div>
+                                    <div class="text-slate-500 italic"><strong>Example:</strong> ${syn.example}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -454,14 +245,11 @@
         }
 
         function resetApp() {
-            currentStep = 0;
-            userData = {};
             document.getElementById("dashboard-container").classList.add("hidden");
-            document.getElementById("onboarding-container").classList.remove("hidden");
-            renderQuestion();
+            document.getElementById("onboarding-form").classList.remove("hidden");
+            document.getElementById("lang-select").selectedIndex = 0;
+            document.getElementById("level-select").selectedIndex = 0;
         }
-
-        renderQuestion();
     </script>
 </body>
 </html>
