@@ -11,10 +11,10 @@
     <div class="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-6 md:p-8">
         <header class="text-center mb-6">
             <h1 class="text-2xl font-bold text-indigo-600">Multi-Lingual Vocabulary Coach</h1>
-            <p class="text-sm text-slate-500">Master new words daily across morning, afternoon, and evening sessions</p>
+            <p class="text-sm text-slate-500">Master new words daily tailored to your exact proficiency level</p>
         </header>
 
-        <!-- Onboarding Form (All on One Page, No Defaults) -->
+        <!-- Onboarding Form -->
         <div id="onboarding-form" class="space-y-4 bg-indigo-50/40 border border-indigo-100 p-6 rounded-xl">
             <h3 class="font-semibold text-lg text-indigo-900 mb-2">Session Configuration</h3>
             
@@ -35,15 +35,15 @@
                 <label class="block text-sm font-medium text-slate-700 mb-1">2. What is your proficiency or difficulty level?</label>
                 <select id="level-select" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="" disabled selected>Select an option</option>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
+                    <option value="Beginner">Beginner (Just started learning)</option>
+                    <option value="Intermediate">Intermediate (~30-40% vocabulary knowledge)</option>
+                    <option value="Advanced">Advanced (High proficiency)</option>
                 </select>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">3. How many total new parent words would you like to learn today? (Splits into Morning, Afternoon, Evening)</label>
-                <input type="number" id="word-count" min="3" max="15" value="6" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label class="block text-sm font-medium text-slate-700 mb-1">3. How many total new words would you like to learn today? (Enter any custom number)</label>
+                <input type="number" id="word-count" min="1" placeholder="Enter any number (e.g., 5, 15, 25)" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
 
             <div>
@@ -74,64 +74,420 @@
     </div>
 
     <script>
-        // Rich vocabulary repository mirroring your desired structure
         const vocabularyBank = {
-            English: [
-                {
-                    word: "Joy", phonetic: "/dʒɔɪ/ (जॉय)", pos: "Noun (संज्ञा)",
-                    meaning: "A feeling of great happiness | बहुत खुशी या आनंद का अहसास",
-                    example: "Playing with children brings great joy. | बच्चों के साथ खेलने से बहुत खुशी मिलती है।",
-                    synonyms: [
-                        { word: "Happiness", phonetic: "/ˈhæp.i.nəs/ (हैप्पीनेस)", pos: "Noun (संज्ञा)", meaning: "The state of being happy | प्रसन्नता या सुख", example: "Her smile was full of happiness. | उसकी मुस्कान खुशी से भरी थी।" },
-                        { word: "Delight", phonetic: "/dɪˈlaɪt/ (डिलाइट)", pos: "Noun (संज्ञा)", meaning: "High degree of pleasure or enjoyment | अत्यधिक आनंद", example: "The magic show was a pure delight. | जादू का शो शुद्ध आनंद था।" }
-                    ]
-                },
-                {
-                    word: "Courage", phonetic: "/ˈkʌr.ɪdʒ/ (करेज)", pos: "Noun (संज्ञा)",
-                    meaning: "The ability to do something that frightens one; bravery | साहस या हिम्मत",
-                    example: "It takes courage to speak the truth. | सच बोलने के लिए साहस की जरूरत होती है।",
-                    synonyms: [
-                        { word: "Bravery", phonetic: "/ˈbreɪ.vər.i/ (ब्रेवरी)", pos: "Noun (संज्ञा)", meaning: "Courageous behavior or character | बहादुरी", example: "The soldier showed great bravery in battle. | सैनिक ने युद्ध में महान बहादुरी दिखाई।" },
-                        { word: "Valor", phonetic: "/ˈvæl.ər/ (वैलर)", pos: "Noun (संज्ञा)", meaning: "Great courage in the face of danger | वीरता", example: "He was awarded a medal for his valor. | उन्हें उनकी वीरता के लिए पदक से सम्मानित किया गया।" }
-                    ]
-                },
-                {
-                    word: "Diligent", phonetic: "/ˈdɪl.ɪ.dʒənt/ (डिलिजेंट)", pos: "Adjective (विशेषण)",
-                    meaning: "Having or showing care and conscientiousness in work | मेहनती या परिश्रमी",
-                    example: "She is a diligent student who completes her homework. | वह एक मेहनती छात्रा है जो अपना गृहकार्य पूरा करती है।",
-                    synonyms: [
-                        { word: "Hardworking", phonetic: "/ˈhɑːrdˌwɜːr.kɪŋ/ (हार्डवर्किंग)", pos: "Adjective (विशेषण)", meaning: "Tending to work with energy | मेहनती", example: "He is a hardworking employee. | वह एक मेहनती कर्मचारी है।" },
-                        { word: "Industrious", phonetic: "/ɪnˈdʌs.tri.əs/ (इंडस्ट्रियस)", pos: "Adjective (विशेषण)", meaning: "Diligent and hard-working | उद्यमी / कर्मठ", example: "An industrious person achieves success quickly. | एक कर्मठ व्यक्ति जल्दी सफलता प्राप्त करता है।" }
-                    ]
-                },
-                {
-                    word: "Eloquent", phonetic: "/ˈel.ə.kwənt/ (एलोक्वेंट)", pos: "Adjective (विशेषण)",
-                    meaning: "Fluent or persuasive in speaking or writing | सुवक्ता या स्पष्टवादी",
-                    example: "Her eloquent speech touched everyone's heart. | उनके ओजस्वी भाषण ने सभी का दिल जीत लिया।",
-                    synonyms: [
-                        { word: "Articulate", phonetic: "/ɑːrˈtɪk.ju.lət/ (आर्टिकुलेट)", pos: "Adjective (विशेषण)", meaning: "Able to speak fluently and coherently | स्पष्ट बोलने वाला", example: "He is very articulate during meetings. | वह बैठकों के दौरान बहुत स्पष्ट बोलते हैं।" },
-                        { word: "Expressive", phonetic: "/ɪkˈspres.ɪv/ (एक्सप्रेसिव)", pos: "Adjective (विशेषण)", meaning: "Effectively conveying thought or feeling | भावपूर्ण", example: "Her eyes were deeply expressive. | उनकी आँखें अत्यधिक भावपूर्ण थीं।" }
-                    ]
-                },
-                {
-                    word: "Resilient", phonetic: "/rɪˈzɪl.jənt/ (रेजिलिएंट)", pos: "Adjective (विशेषण)",
-                    meaning: "Able to withstand or recover quickly from difficult conditions | लचीला",
-                    example: "Small businesses need to be resilient to survive. | छोटे व्यवसायों को जीवित रहने के लिए लचीला होना चाहिए।",
-                    synonyms: [
-                        { word: "Tough", phonetic: "/tʌf/ (टफ)", pos: "Adjective (विशेषण)", meaning: "Strong enough to withstand adverse conditions | मजबूत", example: "We need to stay tough during hard times. | हमें कठिन समय में मजबूत रहना होगा।" },
-                        { word: "Adaptable", phonetic: "/əˈdæp.tə.bəl/ (अडैप्टेबल)", pos: "Adjective (विशेषण)", meaning: "Able to adjust to new conditions | अनुकूलनीय", example: "An adaptable worker succeeds anywhere. | एक अनुकूलनीय कर्मचारी कहीं भी सफल होता है।" }
-                    ]
-                },
-                {
-                    word: "Benevolent", phonetic: "/bəˈnev.ə.lənt/ (बिनेवोलेंट)", pos: "Adjective (विशेषण)",
-                    meaning: "Well meaning and kindly | परोपकारी या दयालु",
-                    example: "The benevolent donor funded the entire project. | परोपकारी दाता ने पूरी परियोजना को वित्त पोषित किया।",
-                    synonyms: [
-                        { word: "Kind", phonetic: "/kaɪnd/ (काइइंड)", pos: "Adjective (विशेषण)", meaning: "Having a friendly and generous nature | दयालु", example: "She is a very kind neighbor. | वह बहुत दयालु पड़ोसी हैं।" },
-                        { word: "Generous", phonetic: "/ˈdʒen.ər.əs/ (जेनरस)", pos: "Adjective (विशेषण)", meaning: "Showing readiness to give more than expected | उदार", example: "He made a generous donation. | उन्होंने एक उदार दान दिया।" }
-                    ]
-                }
-            ]
+            English: {
+                Beginner: [
+                    {
+                        word: "Friend", phonetic: "/frɛnd/ (फ्रेंड)", pos: "Noun (संज्ञा)",
+                        meaning: "A person whom one knows and with whom one has a bond | मित्र या दोस्त",
+                        example: "He is my best friend. | वह मेरा सबसे अच्छा दोस्त है।",
+                        synonyms: [
+                            { word: "Companion", phonetic: "/kəmˈpæn.jən/ (कम्पेनियन)", pos: "Noun (संज्ञा)", meaning: "A person spent time with | साथी", example: "She has been a loyal companion. | वह एक वफादार साथी रही है।" },
+                            { word: "Partner", phonetic: "/ˈpɑːrt.nər/ (पार्टनर)", pos: "Noun (संज्ञा)", meaning: "A person who takes part in an activity | साझेदार", example: "We are business partners. | हम व्यावसायिक साझेदार हैं।" }
+                        ]
+                    },
+                    {
+                        word: "School", phonetic: "/skuːl/ (स्कूल)", pos: "Noun (संज्ञा)",
+                        meaning: "An institution for educating children | विद्यालय",
+                        example: "Children go to school every morning. | बच्चे हर सुबह स्कूल जाते हैं।",
+                        synonyms: [
+                            { word: "Academy", phonetic: "/əˈkæd.ə.mi/ (अकेडमी)", pos: "Noun (संज्ञा)", meaning: "A place of study | अकादमी", example: "He joined a sports academy. | उन्होंने एक खेल अकादमी ज्वाइन की।" },
+                            { word: "Institute", phonetic: "/ˈɪn.stɪ.tuːt/ (इंस्टीट्यूट)", pos: "Noun (संज्ञा)", meaning: "An organization for a purpose | संस्थान", example: "It is a reputed institute. | यह एक प्रतिष्ठित संस्थान है।" }
+                        ]
+                    },
+                    {
+                        word: "Water", phonetic: "/ˈwɔː.tər/ (वॉटर)", pos: "Noun (संज्ञा)",
+                        meaning: "A clear, odorless liquid essential for life | पानी या जल",
+                        example: "Please drink a glass of water. | कृपया एक गिलास पानी पिएं।",
+                        synonyms: [
+                            { word: "Liquid", phonetic: "/ˈlɪk.wɪd/ (लिक्विड)", pos: "Noun (संज्ञा)", meaning: "A substance that flows freely | तरल पदार्थ", example: "Water is a vital liquid. | पानी एक आवश्यक तरल पदार्थ है।" },
+                            { word: "Fluid", phonetic: "/ˈfluː.ɪd/ (फ्लूइड)", pos: "Noun (संज्ञा)", meaning: "A substance with continuous flow | द्रव", example: "Keep your body hydrated. | अपने शरीर को हाइड्रेटेड रखें।" }
+                        ]
+                    },
+                    {
+                        word: "House", phonetic: "/haʊs/ (हाउस)", pos: "Noun (संज्ञा)",
+                        meaning: "A building for human habitation | घर",
+                        example: "They live in a beautiful house. | वे एक सुंदर घर में रहते हैं।",
+                        synonyms: [
+                            { word: "Home", phonetic: "/hoʊm/ (होम)", pos: "Noun (संज्ञा)", meaning: "The place where one lives | घर / निवास", example: "There is no place like home. | घर जैसा कोई स्थान नहीं है।" },
+                            { word: "Residence", phonetic: "/ˈrɛz.ɪ.dəns/ (रेसिडेंस)", pos: "Noun (संज्ञा)", meaning: "A person's home | आवास", example: "This is his official residence. | यह उनका आधिकारिक आवास है।" }
+                        ]
+                    },
+                    {
+                        word: "Apple", phonetic: "/ˈæp.əl/ (एपल)", pos: "Noun (संज्ञा)",
+                        meaning: "A round fruit with red, green, or yellow skin | सेब",
+                        example: "An apple a day keeps the doctor away. | रोज़ाना एक सेब खाने से डॉक्टर दूर रहता है।",
+                        synonyms: [
+                            { word: "Fruit", phonetic: "/fruːt/ (फ्रूट)", pos: "Noun (संज्ञा)", meaning: "The sweet and fleshy product of a tree | फल", example: "Eat fresh fruit daily. | रोज़ाना ताज़ा फल खाएं।" },
+                            { word: "Produce", phonetic: "/ˈprɑː.duːs/ (प्रोड्यूस)", pos: "Noun (संज्ञा)", meaning: "Agricultural products | कृषि उपज", example: "Buy fresh local produce. | ताज़ा स्थानीय उपज खरीदें।" }
+                        ]
+                    },
+                    {
+                        word: "Book", phonetic: "/bʊk/ (बुक)", pos: "Noun (संज्ञा)",
+                        meaning: "A written or printed work consisting of pages | किताब / पुस्तक",
+                        example: "She is reading an interesting book. | वह एक दिलचस्प किताब पढ़ रही है।",
+                        synonyms: [
+                            { word: "Novel", phonetic: "/ˈnɑː.vəl/ (नॉवेल)", pos: "Noun (संज्ञा)", meaning: "A fictitious prose narrative | उपन्यास", example: "He wrote a best-selling novel. | उन्होंने एक बेस्ट-सेलिंग उपन्यास लिखा।" },
+                            { word: "Volume", phonetic: "/ˈvɑːl.juːm/ (वॉल्यूम)", pos: "Noun (संज्ञा)", meaning: "A single book of a work | ग्रंथ / खंड", example: "This is volume one of the series. | यह श्रृंखला का पहला खंड है।" }
+                        ]
+                    },
+                    {
+                        word: "Smile", phonetic: "/smaɪl/ (स्माइल)", pos: "Noun / Verb (संज्ञा / क्रिया)",
+                        meaning: "Form one's features into a pleased or kind expression | मुस्कान",
+                        example: "Her smile brought joy to everyone. | उसकी मुस्कान ने सबको खुश कर दिया।",
+                        synonyms: [
+                            { word: "Grin", phonetic: "/ɡrɪn/ (ग्रिन)", pos: "Noun / Verb (संज्ञा / क्रिया)", meaning: "Smile broadly | चौड़ी मुस्कान", example: "He gave a wide grin. | उसने एक बड़ी मुस्कान दी।" },
+                            { word: "Beam", phonetic: "/biːm/ (बीम)", pos: "Noun / Verb (संज्ञा / क्रिया)", meaning: "Smile radiantly | मुस्कुराना / चमकना", example: "Her face began to beam with pride. | उसका चेहरा गर्व से चमक उठा।" }
+                        ]
+                    },
+                    {
+                        word: "Child", phonetic: "/tʃaɪld/ (चाइल्ड)", pos: "Noun (संज्ञा)",
+                        meaning: "A young human being below the age of puberty | बच्चा",
+                        example: "The child is playing in the park. | बच्चा पार्क में खेल रहा है।",
+                        synonyms: [
+                            { word: "Kid", phonetic: "/kɪd/ (किड)", pos: "Noun (संज्ञा)", meaning: "A child or young person | बच्चा", example: "Kids love playing outdoors. | बच्चों को बाहर खेलना पसंद है।" },
+                            { word: "Youth", phonetic: "/juːθ/ (यूथ)", pos: "Noun (संज्ञा)", meaning: "The period between childhood and age | युवा / बाल्यावस्था", example: "Protect the rights of the youth. | युवाओं के अधिकारों की रक्षा करें।" }
+                        ]
+                    },
+                    {
+                        word: "Morning", phonetic: "/ˈmɔːr.nɪŋ/ (मॉर्निंग)", pos: "Noun (संज्ञा)",
+                        meaning: "The early part of the day, ending at noon | सुबह / प्रातःकाल",
+                        example: "I go for a walk every morning. | मैं हर सुबह सैर पर जाता हूँ।",
+                        synonyms: [
+                            { word: "Dawn", phonetic: "/dɔːn/ (डॉन)", pos: "Noun (संज्ञा)", meaning: "The first appearance of light in the morning | भोर / सवेरा", example: "We woke up at dawn. | हम भोर में उठे।" },
+                            { word: "Daybreak", phonetic: "/ˈdeɪ.breɪk/ (डेब्रेक)", pos: "Noun (संज्ञा)", meaning: "The time in the morning when daylight first appears | सूर्योदय", example: "Work started at daybreak. | सूर्योदय से काम शुरू हुआ।" }
+                        ]
+                    },
+                    {
+                        word: "Money", phonetic: "/ˈmʌn.i/ (मनी)", pos: "Noun (संज्ञा)",
+                        meaning: "A current medium of exchange in the form of coins and banknotes | धन / पैसा",
+                        example: "Save some money for the future. | भविष्य के लिए कुछ पैसे बचाएं।",
+                        synonyms: [
+                            { word: "Cash", phonetic: "/kæʃ/ (कैश)", pos: "Noun (संज्ञा)", meaning: "Money in coins or notes | नकदी", example: "Do you have cash? | क्या आपके पास नकदी है?" },
+                            { word: "Funds", phonetic: "/fʌndz/ (फंड्स)", pos: "Noun (संज्ञा)", meaning: "Financial resources | धन / कोष", example: "We need funds for the project. | हमें प्रोजेक्ट के लिए फंड चाहिए।" }
+                        ]
+                    },
+                    {
+                        word: "Cat", phonetic: "/kæt/ (कैट)", pos: "Noun (संज्ञा)",
+                        meaning: "A small domesticated carnivorous mammal | बिल्ली",
+                        example: "The cat is sleeping on the sofa. | बिल्ली सोफे पर सो रही है।",
+                        synonyms: [
+                            { word: "Feline", phonetic: "/ˈfiː.laɪn/ (फीलाइन)", pos: "Noun / Adjective (संज्ञा / विशेषण)", meaning: "Relating to or affecting cats | बिल्ली प्रजाति का", example: "She rescued a stray feline. | उसने एक आवारा बिल्ली को बचाया।" },
+                            { word: "Kitty", phonetic: "/ˈkɪt.i/ (किटी)", pos: "Noun (संज्ञा)", meaning: "A pet cat | बिल्ली का बच्चा", example: "The kitty loves playing with yarn. | बिल्ली के बच्चे को ऊन के साथ खेलना पसंद है।" }
+                        ]
+                    },
+                    {
+                        word: "Dog", phonetic: "/dɔːɡ/ (डॉग)", pos: "Noun (संज्ञा)",
+                        meaning: "A domesticated carnivorous mammal that typically has a long snout | कुत्ता",
+                        example: "His dog barks at strangers. | उसका कुत्ता अजनबियों पर भौंकता है।",
+                        synonyms: [
+                            { word: "Canine", phonetic: "/ˈkeɪ.naɪn/ (केनाइन)", pos: "Noun / Adjective (संज्ञा / विशेषण)", meaning: "Relating to or characteristic of dogs | श्वान / कुत्ता प्रजाति", example: "Police use canine units to track scents. | पुलिस गंध का पता लगाने के लिए श्वान दस्तों का उपयोग करती है।" },
+                            { word: "Pup", phonetic: "/pʌp/ (पप)", pos: "Noun (संज्ञा)", meaning: "A young dog | पिल्ला", example: "They adopted a cute little pup. | उन्होंने एक प्यारा सा छोटा पिल्ला गोद लिया।" }
+                        ]
+                    },
+                    {
+                        word: "Sun", phonetic: "/sʌn/ (सन)", pos: "Noun (संज्ञा)",
+                        meaning: "The star around which the earth orbits | सूर्य / सूरज",
+                        example: "The sun rises in the east. | सूर्य पूर्व में उगता है।",
+                        synonyms: [
+                            { word: "Sunshine", phonetic: "/ˈsʌn.ʃaɪn/ (सनशाइन)", pos: "Noun (संज्ञा)", meaning: "Direct sunlight unobstructed by clouds | धूप", example: "We enjoy the warm sunshine. | हम गर्म धूप का आनंद लेते हैं।" },
+                            { word: "Daylight", phonetic: "/ˈdeɪ.laɪt/ (डेलाइट)", pos: "Noun (संज्ञा)", meaning: "The natural light of the day | दिन का प्रकाश", example: "Finish your work in daylight. | दिन के उजाले में अपना काम खत्म करें।" }
+                        ]
+                    },
+                    {
+                        word: "Milk", phonetic: "/mɪlk/ (मिल्क)", pos: "Noun (संज्ञा)",
+                        meaning: "An opaque white fluid produced by the mammary glands of mammals | दूध",
+                        example: "Children should drink milk daily. | बच्चों को रोज़ाना दूध पीना चाहिए।",
+                        synonyms: [
+                            { word: "Dairy", phonetic: "/ˈder.i/ (डेयरी)", pos: "Noun / Adjective (संज्ञा / विशेषण)", meaning: "Food produced from milk | डेयरी उत्पाद", example: "Include dairy products in your diet. | अपने आहार में डेयरी उत्पादों को शामिल करें।" },
+                            { word: "Bovine", phonetic: "/ˈboʊ.vaɪn/ (बोवाइन)", pos: "Adjective (विशेषण)", meaning: "Relating to cattle | गोवंश संबंधी", example: "Milk is a bovine product. | दूध गोवंश उत्पाद है।" }
+                        ]
+                    },
+                    {
+                        word: "Bread", phonetic: "/brɛd/ (ब्रेड)", pos: "Noun (संज्ञा)",
+                        meaning: "Food made of flour, water, and yeast mixed together and baked | रोटी / ब्रेड",
+                        example: "I eat a slice of bread for breakfast. | मैं नाश्ते में एक स्लाइस ब्रेड खाता हूँ।",
+                        synonyms: [
+                            { word: "Food", phonetic: "/fuːd/ (फूड)", pos: "Noun (संज्ञा)", meaning: "Any nutritious substance that people eat | भोजन / खाना", example: "Bread is a staple food. | ब्रेड एक मुख्य भोजन है।" },
+                            { word: "Loaf", phonetic: "/loʊf/ (लोफ)", pos: "Noun (संज्ञा)", meaning: "A shaped mass of baked bread | ब्रेड का टुकड़ा / लोफ", example: "Buy a loaf of fresh bread. | ताजी ब्रेड का एक लोफ खरीदें।" }
+                        ]
+                    }
+                ],
+                Intermediate: [
+                    {
+                        word: "Courage", phonetic: "/ˈkʌr.ɪdʒ/ (करेज)", pos: "Noun (संज्ञा)",
+                        meaning: "The ability to do something that frightens one; bravery | साहस",
+                        example: "It takes courage to speak the truth. | सच बोलने के लिए साहस की जरूरत होती है।",
+                        synonyms: [
+                            { word: "Bravery", phonetic: "/ˈbreɪ.vər.i/ (ब्रेवरी)", pos: "Noun (संज्ञा)", meaning: "Courageous behavior | बहादुरी", example: "The soldier showed great bravery. | सैनिक ने महान बहादुरी दिखाई।" },
+                            { word: "Valor", phonetic: "/ˈvæl.ər/ (वैलर)", pos: "Noun (संज्ञा)", meaning: "Great courage in danger | वीरता", example: "He was awarded for his valor. | उन्हें उनकी वीरता के लिए सम्मानित किया गया।" }
+                        ]
+                    },
+                    {
+                        word: "Honest", phonetic: "/ˈɑː.nɪst/ (ऑनेस्ट)", pos: "Adjective (विशेषण)",
+                        meaning: "Free of deceit and untruthfulness; sincere | ईमानदार",
+                        example: "Always be honest in your dealings. | अपने लेन-देन में हमेशा ईमानदार रहें।",
+                        synonyms: [
+                            { word: "Truthful", phonetic: "/ˈtruːθ.fəl/ (टूथफुल)", pos: "Adjective (विशेषण)", meaning: "Telling the truth | सच्चा", example: "She gave a truthful answer. | उसने एक सच्चा उत्तर दिया।" },
+                            { word: "Sincere", phonetic: "/sɪnˈsɪər/ (सिंसियर)", pos: "Adjective (विशेषण)", meaning: "Free from pretense; genuine | निष्कपट", example: "His apology felt very sincere. | उसकी माफ़ी बहुत सच्ची लगी।" }
+                        ]
+                    },
+                    {
+                        word: "Curious", phonetic: "/ˈkjʊr.i.əs/ (क्युरियस)", pos: "Adjective (विशेषण)",
+                        meaning: "Eager to know or learn something | जिज्ञासु",
+                        example: "Children are naturally curious. | बच्चे स्वाभाविक रूप से जिज्ञासु होते हैं।",
+                        synonyms: [
+                            { word: "Inquisitive", phonetic: "/ɪnˈkwɪz.ə.tɪv/ (इन्क्विजिटिव)", pos: "Adjective (विशेषण)", meaning: "Curious or inquiring | पूछताछ करने वाला", example: "An inquisitive mind learns quickly. | एक जिज्ञासु मन जल्दी सीखता है।" },
+                            { word: "Eager", phonetic: "/ˈiː.ɡər/ (ईगर)", pos: "Adjective (विशेषण)", meaning: "A strong desire for something | उत्सुक", example: "Students are eager to learn. | छात्र सीखने के लिए उत्सुक हैं।" }
+                        ]
+                    },
+                    {
+                        word: "Efficient", phonetic: "/ɪˈfɪʃ.ənt/ (एफिशिएंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Achieving maximum productivity with minimum wasted effort | कुशल / दक्ष",
+                        example: "She is an efficient manager. | वह एक कुशल मैनेजर हैं।",
+                        synonyms: [
+                            { word: "Effective", phonetic: "/ɪˈfɛk.tɪv/ (इफेक्टिव)", pos: "Adjective (विशेषण)", meaning: "Successful in producing a desired result | प्रभावी", example: "This is an effective strategy. | यह एक प्रभावी रणनीति है।" },
+                            { word: "Productive", phonetic: "/prəˈdʌk.tɪv/ (प्रोडक्टिव)", pos: "Adjective (विशेषण)", meaning: "Producing or achieving a lot | उत्पादक", example: "It was a productive meeting. | यह एक उत्पादक बैठक थी।" }
+                        ]
+                    },
+                    {
+                        word: "Confident", phonetic: "/ˈkɑːn.fɪ.dənt/ (कॉन्फिडेंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Feeling or showing certainty about something | आत्मविश्वास से भरा",
+                        example: "He is confident about winning the match. | वह मैच जीतने के प्रति आश्वस्त है।",
+                        synonyms: [
+                            { word: "Assured", phonetic: "/əˈʃʊrd/ (अशोर्ड)", pos: "Adjective (विशेषण)", meaning: "Confident and self-possessed | आश्वस्त", example: "She gave an assured performance. | उसने एक आश्वस्त प्रदर्शन दिया।" },
+                            { word: "Certain", phonetic: "/ˈsɜːr.tən/ (सर्टेन)", pos: "Adjective (विशेषण)", meaning: "Known for sure; established | निश्चित", example: "I am certain of success. | मुझे सफलता की पूरी निश्चितता है।" }
+                        ]
+                    },
+                    {
+                        word: "Creative", phonetic: "/kriˈeɪ.tɪv/ (क्रिएटिव)", pos: "Adjective (विशेषण)",
+                        meaning: "Relating to or involving the use of imagination | रचनात्मक",
+                        example: "Designers need to be creative. | डिज़ाइनरों को रचनात्मक होने की आवश्यकता है।",
+                        synonyms: [
+                            { word: "Innovative", phonetic: "/ˈɪn.ə.v,eɪ.tɪv/ (इनोवेटिव)", pos: "Adjective (विशेषण)", meaning: "Featuring new methods; advanced and original | नवीन / नवोन्मेषी", example: "They introduced innovative ideas. | उन्होंने नए विचार पेश किए।" },
+                            { word: "Imaginative", phonetic: "/ɪˈmædʒ.ə.nə.tɪv/ (इमेजिनेटिव)", pos: "Adjective (विशेषण)", meaning: "Having or showing creativity | कल्पनाशील", example: "It was an imaginative story. | यह एक कल्पनाशील कहानी थी।" }
+                        ]
+                    },
+                    {
+                        word: "Patient", phonetic: "/ˈpeɪ.ʃənt/ (पेशेंट)", pos: "Adjective / Noun (विशेषण / संज्ञा)",
+                        meaning: "Able to accept or tolerate delays without becoming annoyed | धैर्यवान",
+                        example: "You need to be patient while learning. | सीखते समय आपको धैर्य रखना होगा।",
+                        synonyms: [
+                            { word: "Enduring", phonetic: "/ɪnˈdʊr.ɪŋ/ (एंड्यूरिंग)", pos: "Adjective (विशेषण)", meaning: "Lasting; enduring hardship | सहनशील", example: "She showed enduring patience. | उसने अटूट धैर्य दिखाया।" },
+                            { word: "Tolerant", phonetic: "/ˈtɑː.lɚ.ənt/ (टॉलरेंट)", pos: "Adjective (विशेषण)", meaning: "Showing willingness to allow existence of opinions or behavior | सहिष्णु", example: "We must be tolerant of others. | हमें दूसरों के प्रति सहिष्णु होना चाहिए।" }
+                        ]
+                    },
+                    {
+                        word: "Succeed", phonetic: "/səkˈsiːd/ (सक्सीड)", pos: "Verb (क्रिया)",
+                        meaning: "Achieve the desired aim or result | सफल होना",
+                        example: "Work hard if you want to succeed. | यदि आप सफल होना चाहते हैं तो कड़ी मेहनत करें।",
+                        synonyms: [
+                            { word: "Prosper", phonetic: "/ˈprɑː.spɚ/ (प्रॉस्पर)", pos: "Verb (क्रिया)", meaning: "Succeed in material terms; flourish | समृद्ध होना", example: "The business began to prosper. | व्यवसाय समृद्ध होने लगा।" },
+                            { word: "Thrive", phonetic: "/θraɪv/ (थ्राइव)", pos: "Verb (क्रिया)", meaning: "Grow or develop well or vigorously | पनपना / फलना-फूलना", example: "Plants thrive in sunlight. | पौधे धूप में पनपते हैं।" }
+                        ]
+                    },
+                    {
+                        word: "Generous", phonetic: "/ˈdʒen.ər.əs/ (जेनरस)", pos: "Adjective (विशेषण)",
+                        meaning: "Showing readiness to give more of something than is strictly necessary | उदार",
+                        example: "He made a generous donation to charity. | उन्होंने चैरिटी को एक उदार दान दिया।",
+                        synonyms: [
+                            { word: "Charitable", phonetic: "/ˈtʃer.ə.tə.bəl/ (चैरिटेबल)", pos: "Adjective (विशेषण)", meaning: "Of or relating to the assistance of those in need | परोपकारी / दानी", example: "She runs a charitable trust. | वह एक परोपकारी ट्रस्ट चलाती हैं।" },
+                            { word: "Bounteous", phonetic: "/ˈbaʊn.ti.əs/ (बाउंटियस)", pos: "Adjective (विशेषण)", meaning: "Generously given or giving | प्रचुर / उदार", example: "Nature has been bounteous to us. | प्रकृति हम पर उदार रही है।" }
+                        ]
+                    },
+                    {
+                        word: "Reluctant", phonetic: "/rɪˈlʌk.tənt/ (रिलक्टेंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Unwilling and hesitant; disinclined | अनिच्छुक",
+                        example: "He was reluctant to discuss the issue. | वह इस मुद्दे पर चर्चा करने के लिए अनिच्छुक था।",
+                        synonyms: [
+                            { word: "Hesitant", phonetic: "/ˈhɛz.ə.tənt/ (हेसिटेंट)", pos: "Adjective (विशेषण)", meaning: "Tentative, unsure, or delayed | संकोची / हिचकिचाने वाला", example: "She was hesitant to accept the offer. | वह प्रस्ताव स्वीकार करने में हिचकिचा रही थी।" },
+                            { word: "Unwilling", phonetic: "/ʌnˈwɪl.ɪŋ/ (अनविलिंग)", pos: "Adjective (विशेषण)", meaning: "Not ready, eager, or prepared to do something | अनिच्छुक", example: "He was unwilling to compromise. | वह समझौता करने को तैयार नहीं था।" }
+                        ]
+                    },
+                    {
+                        word: "Ambition", phonetic: "/æmˈbɪʃ.ən/ (एम्बिशंस)", pos: "Noun (संज्ञा)",
+                        meaning: "A strong desire to do or achieve something | महत्वाकांक्षा",
+                        example: "His ambition is to start his own business. | उनकी महत्वाकांक्षा अपना खुद का व्यवसाय शुरू करने की है।",
+                        synonyms: [
+                            { word: "Aspiration", phonetic: "/ˌæs.pəˈreɪ.ʃən/ (एस्पिरेशन)", pos: "Noun (संज्ञा)", meaning: "A hope or ambition of achieving something | आकांक्षा / अभिलाषा", example: "She has high career aspirations. | उनकी उच्च करियर आकांक्षाएं हैं।" },
+                            { word: "Drive", phonetic: "/draɪv/ (ड्राइव)", pos: "Noun (संज्ञा)", meaning: "Energy and determination to achieve things | लगन / प्रेरणा", example: "He has the drive to succeed. | उनमें सफल होने की लगन है।" }
+                        ]
+                    },
+                    {
+                        word: "Diligent", phonetic: "/ˈdɪl.ə.dʒənt/ (डिलिजेंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Having or showing care and conscientiousness in one's work or duties | मेहनती / परिश्रमी",
+                        example: "She is a diligent student who always completes her assignments. | वह एक परिश्रमी छात्रा है जो हमेशा अपना काम पूरा करती है।",
+                        synonyms: [
+                            { word: "Hardworking", phonetic: "/ˈhɑːrdˌwɝː.kɪŋ/ (हार्डवर्किंग)", pos: "Adjective (विशेषण)", meaning: "Tending to work with energy and commitment | मेहनती", example: "He is a hardworking employee. | वह एक मेहनती कर्मचारी हैं।" },
+                            { word: "Industrious", phonetic: "/ɪnˈdʌs.tri.əs/ (इंडस्ट्रियस)", pos: "Adjective (विशेषण)", meaning: "Diligent and hardworking | उद्यमी / कर्मठ", example: "An industrious worker achieves great results. | एक कर्मठ कर्मचारी बेहतरीन परिणाम प्राप्त करता है।" }
+                        ]
+                    },
+                    {
+                        word: "Persistent", phonetic: "/pɚˈsɪs.tənt/ (पर्सिस्टेंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Continuing firmly in a course of action in spite of difficulty | दृढ़ / लगातार",
+                        example: "Through persistent effort, she cleared the exam. | लगातार प्रयास से उसने परीक्षा पास कर ली।",
+                        synonyms: [
+                            { word: "Tenacious", phonetic: "/təˈneɪ.ʃəs/ (टिनाशस)", pos: "Adjective (विशेषण)", meaning: "Tending to keep a firm hold of something; clinging tenaciously | दृढ़ निश्चयी", example: "He showed tenacious resolve. | उन्होंने दृढ़ संकल्प दिखाया।" },
+                            { word: "Resolute", phonetic: "/ˈrɛz.ə.luːt/ (रेजोल्यूट)", pos: "Adjective (विशेषण)", meaning: "Admirably purposeful, resolute, and unwavering | संकल्पबद्ध", example: "They remained resolute in their goal. | वे अपने लक्ष्य के प्रति संकल्पबद्ध रहे।" }
+                        ]
+                    },
+                    {
+                        word: "Reliable", phonetic: "/rɪˈlaɪ.ə.bəl/ (रिलायबल)", pos: "Adjective (विशेषण)",
+                        meaning: "Consistently good in quality or performance; trustworthy | भरोसेमंद",
+                        example: "He is a reliable friend you can always count on. | वह एक भरोसेमंद दोस्त हैं जिन पर आप हमेशा भरोसा कर सकते हैं।",
+                        synonyms: [
+                            { word: "Dependable", phonetic: "/dɪˈpɛn.də.bəl/ (डिपेंडेबल)", pos: "Adjective (विशेषण)", meaning: "Trustworthy and reliable | विश्वसनीय", example: "She is a dependable team member. | वह एक विश्वसनीय टीम मेंबर हैं।" },
+                            { word: "Trustworthy", phonetic: "/ˈtrʌstˌwɝː.ði/ (ट्रस्टवर्दी)", pos: "Adjective (विशेषण)", meaning: "Able to be relied on as honest or truthful | विश्वसनीय / ईमानदार", example: "Build a trustworthy relationship. | एक भरोसेमंद रिश्ता बनाएं।" }
+                        ]
+                    },
+                    {
+                        word: "Sincere", phonetic: "/sɪnˈsɪər/ (सिंसियर)", pos: "Adjective (विशेषण)",
+                        meaning: "Free from pretense or deceit; showing sincere feeling | सच्चा / निष्कपट",
+                        example: "I offer my sincere thanks for your help. | मैं आपकी मदद के लिए अपनी सच्ची धन्यवाद देता हूँ।",
+                        synonyms: [
+                            { word: "Genuine", phonetic: "/ˈdʒɛn.ju.ɪn/ (जेन्युइन)", pos: "Adjective (विशेषण)", meaning: "Truly what something is said to be; authentic | असली / सच्चा", example: "This is genuine leather. | यह असली चमड़ा है।" },
+                            { word: "Heartfelt", phonetic: "/ˈhɑːrt.fɛlt/ (हार्टफेल्ट)", pos: "Adjective (विशेषण)", meaning: "Deeply felt; sincere | हार्दिक", example: "Please accept my heartfelt gratitude. | कृपया मेरी हार्दिक कृतज्ञता स्वीकार करें।" }
+                        ]
+                    }
+                ],
+                Advanced: [
+                    {
+                        word: "Benevolent", phonetic: "/bəˈnev.ə.lənt/ (बिनेवोलेंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Well meaning and kindly | परोपकारी",
+                        example: "The benevolent donor funded the hospital. | परोपकारी दाता ने अस्पताल को वित्त पोषित किया।",
+                        synonyms: [
+                            { word: "Altruistic", phonetic: "/ˌæl.truˈɪs.tɪk/ (अल्ट्रुइस्टिक)", pos: "Adjective (विशेषण)", meaning: "Selfless concern for the well-being of others | परोपकारी", example: "Her altruistic acts inspired many. | उनके परोपकारी कार्यों ने कई लोगों को प्रेरित किया।" },
+                            { word: "Magnanimous", phonetic: "/mæɡˈnæn.ə.məs/ (मैग्जैनिमअस)", pos: "Adjective (विशेषण)", meaning: "Generous or forgiving, especially toward a rival | उदार", example: "He was magnanimous in victory. | वह जीत में उदार थे।" }
+                        ]
+                    },
+                    {
+                        word: "Resilient", phonetic: "/rɪˈzɪl.jənt/ (रेजिलिएंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Able to withstand or recover quickly from difficult conditions | लचीला / सहनशील",
+                        example: "Small businesses must be resilient. | छोटे व्यवसायों को लचीला होना चाहिए।",
+                        synonyms: [
+                            { word: "Tough", phonetic: "/tʌf/ (टफ)", pos: "Adjective (विशेषण)", meaning: "Strong enough to withstand adverse conditions | मजबूत", example: "We must stay tough during hard times. | हमें कठिन समय में मजबूत रहना चाहिए।" },
+                            { word: "Adaptable", phonetic: "/əˈdæp.tə.bəl/ (अडैप्टेबल)", pos: "Adjective (विशेषण)", meaning: "Able to adjust to new conditions | अनुकूलनीय", example: "An adaptable worker succeeds anywhere. | एक अनुकूलनीय कर्मचारी कहीं भी सफल होता है।" }
+                        ]
+                    },
+                    {
+                        word: "Meticulous", phonetic: "/məˈtɪk.jə.ləs/ (मेटिकुलस)", pos: "Adjective (विशेषण)",
+                        meaning: "Showing great attention to detail; very careful and precise | अति सावधानीपूर्वक / सूक्ष्म",
+                        example: "He was meticulous about his work records. | वह अपने कार्य रिकॉर्ड के प्रति अति सावधान थे।",
+                        synonyms: [
+                            { word: "Thorough", phonetic: "/ˈθɝː.oʊ/ (थॉररो)", pos: "Adjective (विशेषण)", meaning: "Performed with great care and completeness | पूरी तरह से / संपूर्ण", example: "They conducted a thorough investigation. | उन्होंने एक गहन जांच की।" },
+                            { word: "Scrupulous", phonetic: "/ˈskruː.pjə.ləs/ (स्क्र्यूपुलस)", pos: "Adjective (विशेषण)", meaning: "Diligent, thorough, and extremely attentive to details | कर्तव्यनिष्ठ / ईमानदार", example: "She is scrupulous in financial matters. | वह वित्तीय मामलों में बेहद ईमानदार और सटीक हैं।" }
+                        ]
+                    },
+                    {
+                        word: "Pragmatic", phonetic: "/præɡˈmæt.ɪk/ (प्रैग्मैटिक)", pos: "Adjective (विशेषण)",
+                        meaning: "Dealing with things sensibly and realistically | व्यावहारिक",
+                        example: "We need a pragmatic approach to solve this issue. | इस मुद्दे को हल करने के लिए हमें एक व्यावहारिक दृष्टिकोण चाहिए।",
+                        synonyms: [
+                            { word: "Realistic", phonetic: "/ˌriːəˈlɪs.tɪk/ (रियलिस्टिक)", pos: "Adjective (विशेषण)", meaning: "Having or showing a sensible and practical idea of what can be achieved | यथार्थवादी", example: "Set realistic goals for yourself. | अपने लिए यथार्थवादी लक्ष्य निर्धारित करें।" },
+                            { word: "Practical", phonetic: "/ˈpræk.tɪ.kəl/ (प्रैक्टिकल)", pos: "Adjective (विशेषण)", meaning: "Adapted for actual use | व्यावहारिक", example: "Find a practical solution. | एक व्यावहारिक समाधान ढूंढें।" }
+                        ]
+                    },
+                    {
+                        word: "Ubiquitous", phonetic: "/juːˈbɪk.wə.təs/ (यूबिक्विटस)", pos: "Adjective (विशेषण)",
+                        meaning: "Present, appearing, or found everywhere | सर्वव्यापक / हर जगह मौजूद",
+                        example: "Smartphones have become ubiquitous today. | आज स्मार्टफ़ोन हर जगह मौजूद हो गए हैं।",
+                        synonyms: [
+                            { word: "Omnipresent", phonetic: "/ˌɑːm.nɪˈprɛz.ənt/ (ऑम्निप्रेसेंट)", pos: "Adjective (विशेषण)", meaning: "Widely or constantly encountered; widespread | सर्वव्यापी", example: "The influence of media is omnipresent. | मीडिया का प्रभाव सर्वव्यापी है।" },
+                            { word: "Pervasive", phonetic: "/pɚˈveɪ.sɪv/ (परवेसिव)", pos: "Adjective (विशेषण)", meaning: "Spreading widely throughout an area or a group of people | व्यापक", example: "There is a pervasive sense of optimism. | आशावाद की एक व्यापक भावना है।" }
+                        ]
+                    },
+                    {
+                        word: "Ambivalent", phonetic: "/æmˈbɪv.ə.lənt/ (एम्बिवेलेंट)", pos: "Adjective (विशेषण)",
+                        meaning: "Having mixed feelings or contradictory ideas about something | उभयभावी / अनिर्णय की स्थिति",
+                        example: "She remained ambivalent about the job offer. | वह नौकरी के प्रस्ताव को लेकर अनिर्णय की स्थिति में रही।",
+                        synonyms: [
+                            { word: "Undecided", phonetic: "/ˌʌn.dɪˈsaɪ.dɪd/ (अनडिसाइडेड)", pos: "Adjective (विशेषण)", meaning: "Not having made a choice or settled a question | अनिर्णित", example: "He is still undecided on the plan. | वह अभी भी योजना पर अनिर्णित हैं।" },
+                            { word: "Conflicted", phonetic: "/kənˈflɪk.tɪd/ (कॉन्फ्लिक्टेड)", pos: "Adjective (विशेषण)", meaning: "Confused or troubled by conflicting feelings | अंतर्द्वंद में", example: "She felt conflicted between loyalty and duty. | वह निष्ठा और कर्तव्य के बीच अंतर्द्वंद महसूस कर रही थी।" }
+                        ]
+                    },
+                    {
+                        word: "Ephemeral", phonetic: "/ɪˈfɛm.ɚ.əl/ (इफेमरल)", pos: "Adjective (विशेषण)",
+                        meaning: "Lasting for a very short time | अल्पकालिक / क्षणिक",
+                        example: "Fame in social media can be ephemeral. | सोशल मीडिया में प्रसिद्धि क्षणिक हो सकती है।",
+                        synonyms: [
+                            { word: "Transient", phonetic: "/ˈtræn.zi.ənt/ (ट्रांजिएंट)", pos: "Adjective (विशेषण)", meaning: "Lasting only for a short time; impermanent | क्षणभंगुर", example: "We experienced transient showers. | हमने क्षणिक बौछारें अनुभव कीं।" },
+                            { word: "Fleeting", phonetic: "/ˈfliː.tɪŋ/ (फ्लिटिंग)", pos: "Adjective (विशेषण)", meaning: "Lasting for a very short time | पल भर का", example: "I caught a fleeting glimpse of him. | मैंने उसकी एक झलक पल भर के लिए देखी।" }
+                        ]
+                    },
+                    {
+                        word: "Cacophony", phonetic: "/kəˈkɑː.fə.ni/ (कैकोफनी)", pos: "Noun (संज्ञा)",
+                        meaning: "A harsh, discordant mixture of sounds | कोलाहल / कर्कश आवाज़",
+                        example: "A cacophony of car horns filled the street. | सड़क पर कारों के हॉर्न का कोलाहल गूंज रहा था।",
+                        synonyms: [
+                            { word: "Din", phonetic: "/dɪn/ (डिन)", pos: "Noun (संज्ञा)", meaning: "A loud, unpleasant, and prolonged noise | शोर-शराबा", example: "The din made it hard to sleep. | शोर के कारण सोना मुश्किल हो गया।" },
+                            { word: "Racket", phonetic: "/ˈræk.ɪt/ (रैकेट)", pos: "Noun (संज्ञा)", meaning: "An unpleasant loud noise | हुड़दंग / शोर", example: "Stop making that racket! | वह शोर करना बंद करो!" }
+                        ]
+                    },
+                    {
+                        word: "Garrulous", phonetic: "/ˈɡær.ə.ləs/ (गैरुलस)", pos: "Adjective (विशेषण)",
+                        meaning: "Excessively talkative, especially on trivial matters | बातूनी / बातल",
+                        example: "The garrulous passenger talked throughout the trip. | बातूनी यात्री ने पूरी यात्रा के दौरान बात की।",
+                        synonyms: [
+                            { word: "Loquacious", phonetic: "/loʊˈkweɪ.ʃəs/ (लोकवेशस)", pos: "Adjective (विशेषण)", meaning: "Tending to talk a great deal; talkative | बातूनी", example: "He was unusually loquacious tonight. | वह आज रात कुछ ज़्यादा ही बातूनी थे।" },
+                            { word: "Talkative", phonetic: "/ˈtɑː.kə.tɪv/ (टॉकाटिव)", pos: "Adjective (विशेषण)", meaning: "Fond of or given to talking | बातूनी", example: "She is a friendly and talkative person. | वह एक मिलनसार और बातूनी व्यक्ति हैं।" }
+                        ]
+                    },
+                    {
+                        word: "Sycophant", phonetic: "/ˈsɪk.ə.fænt/ (सिकोफेंट)", pos: "Noun (संज्ञा)",
+                        meaning: "A person who acts obsequiously toward someone important in order to gain advantage | चापलूस",
+                        example: "The leader surrounded himself with sycophants. | नेता ने खुद को चापलूसों से घेर लिया।",
+                        synonyms: [
+                            { word: "Flatterer", phonetic: "/ˈflæt.ɚ.ɚ/ (फ्लैटरर)", pos: "Noun (संज्ञा)", meaning: "Someone who praises others insincerely | चापलूस", example: "Don't listen to professional flatterers. | पेशेवर चापलूसों की बात न सुनें।" },
+                            { word: "Parasite", phonetic: "/ˈpɛr.ə.saɪt/ (पैरासाइट)", pos: "Noun (संज्ञा)", meaning: "An organism or person living at others' expense | परजीवी / चापलूस", example: "He treated sycophants as parasites. | उन्होंने चापलूसों को परजीवी के रूप में माना।" }
+                        ]
+                    },
+                    {
+                        word: "Fastidious", phonetic: "/fæˈstɪd.i.əs/ (फास्टिडियस)", pos: "Adjective (विशेषण)",
+                        meaning: "Very attentive to and concerned about accuracy and detail | दुराराध्य / तुनकमिजाज / अति सावधान",
+                        example: "He is fastidious about cleanliness. | वह साफ-सफाई को लेकर बेहद तुनकमिजाज और सावधान हैं।",
+                        synonyms: [
+                            { word: "Meticulous", phonetic: "/məˈtɪk.jə.ləs/ (मेटिकुलस)", pos: "Adjective (विशेषण)", meaning: "Showing great attention to detail | सूक्ष्म", example: "She is meticulous in her research. | वह अपने शोध में बहुत सूक्ष्म हैं।" },
+                            { word: "Particular", phonetic: "/pɚˈtɪk.jə.lɚ/ (पर्टिकुलर)", pos: "Adjective (विशेषण)", meaning: "Fussy about matters of detail | विशेष / नखरेबाज", example: "He is particular about what he eats. | वह इस बात को लेकर विशेष हैं कि वह क्या खाते हैं।" }
+                        ]
+                    },
+                    {
+                        word: "Parsimonious", phonetic: "/ˌpɑːr.səˈmoʊ.ni.əs/ (पार्सिमोनियस)", pos: "Adjective (विशेषण)",
+                        meaning: "Extremely unwilling to spend money or use resources | कंजूस / मितव्ययी",
+                        example: "His parsimonious nature prevented him from making donations. | उनके कंजूस स्वभाव ने उन्हें दान देने से रोक दिया।",
+                        synonyms: [
+                            { word: "Frugal", phonetic: "/ˈfruː.ɡəl/ (फ्रूगल)", pos: "Adjective (विशेषण)", meaning: "Sparing or economical with regard to money or food | मितव्ययी", example: "Live a frugal life to save money. | पैसे बचाने के लिए मितव्ययी जीवन जिएं।" },
+                            { word: "Stinting", phonetic: "/ˈstɪn.tɪŋ/ (स्टिंटिंग)", pos: "Adjective (विशेषण)", meaning: "Providing grudgingly or in small amounts | संकीर्ण / कंजूसी भरा", example: "They made a stinting contribution. | उन्होंने कंजूसी भरा योगदान दिया।" }
+                        ]
+                    },
+                    {
+                        word: "Obfuscate", phonetic: "/ˈɑːb.fə.skeɪt/ (ऑब्फ्यूकेट)", pos: "Verb (क्रिया)",
+                        meaning: "Render obscure, unclear, or unintelligible | अस्पष्ट करना / उलझाना",
+                        example: "Do not try to obfuscate the facts with complex jargon. | जटिल शब्दावली से तथ्यों को अस्पष्ट करने का प्रयास न करें।",
+                        synonyms: [
+                            { word: "Confuse", phonetic: "/kənˈfjuːz/ (कन्फ्यूज)", pos: "Verb (क्रिया)", meaning: "Make (someone) bewildered or perplexed | भ्रमित करना", example: "The instructions tend to confuse users. | निर्देश उपयोगकर्ताओं को भ्रमित करते हैं।" },
+                            { word: "Blur", phonetic: "/blɜːr/ (ब्लर)", pos: "Verb (क्रिया)", meaning: "Make or become unclear or less distinct | धुंधला करना", example: "Tears began to blur her vision. | आंसुओं ने उसकी दृष्टि को धुंधला करना शुरू कर दिया।" }
+                        ]
+                    },
+                    {
+                        word: "Quintessential", phonetic: "/ˌkwɪn.təˈsɛn.ʃəl/ (क्विंटेसेंशियल)", pos: "Adjective (विशेषण)",
+                        meaning: "Representing the most perfect or typical example of a quality or class | सर्वोत्कृष्ट / विशिष्ट उदाहरण",
+                        example: "He is the quintessential gentleman. | वह सर्वोत्कृष्ट जेंटलमैन हैं।",
+                        synonyms: [
+                            { word: "Typical", phonetic: "/ˈtɪp.ɪ.kəl/ (टिपिकल)", pos: "Adjective (विशेषण)", meaning: "Having the distinctive qualities of a particular type of person or thing | विशिष्ट / विशिष्ट प्रकार का", example: "This is typical behavior. | यह विशिष्ट व्यवहार है।" },
+                            { word: "Classic", phonetic: "/ˈklæs.ɪk/ (क्लासिक)", pos: "Adjective (विशेषण)", meaning: "Judged over a period of time to be of the highest quality | उत्कृष्ट / क्लासिक", example: "It is a classic masterpiece. | यह एक क्लासिक मास्टरपीस है।" }
+                        ]
+                    },
+                    {
+                        word: "Venerable", phonetic: "/ˈvɛn.ər.ə.bəl/ (वेनेरेबल)", pos: "Adjective (विशेषण)",
+                        meaning: "Accorded a great deal of respect, especially because of age, wisdom, or character | आदरणीय / वंदनीय",
+                        example: "The venerable scholar shared his wisdom with the students. | आदरणीय विद्वान ने छात्रों के साथ अपना ज्ञान साझा किया।",
+                        synonyms: [
+                            { word: "Respected", phonetic: "/rɪˈspɛk.tɪd/ (रिस्पेक्टेड)", pos: "Adjective (विशेषण)", meaning: "Admired by many people | सम्मानित / आदरणीय", example: "He is a respected leader. | वह एक सम्मानित नेता हैं।" },
+                            { word: "Honored", phonetic: "/ˈɑː.nərd/ (ऑनर्ड)", pos: "Adjective (विशेषण)", meaning: "Regarded with great respect | सम्मानित", example: "We welcomed our honored guests. | हमने अपने सम्मानित अतिथियों का स्वागत किया।" }
+                        ]
+                    }
+                ]
+            }
         };
 
         let vocabularyData = {};
@@ -139,12 +495,20 @@
         function startLearning() {
             const lang = document.getElementById("lang-select").value;
             const level = document.getElementById("level-select").value;
-            const count = parseInt(document.getElementById("word-count")).value || 6;
+            const countInput = document.getElementById("word-count").value;
             const theme = document.getElementById("theme-input").value || "General Vocabulary";
 
-            // Validate selections
-            if (!lang || !level) {
-                alert("Please select both a Language and a Difficulty Level before proceeding.");
+            if (!lang) {
+                alert("Please select a Language.");
+                return;
+            }
+            if (!level) {
+                alert("Please select a Difficulty Level.");
+                return;
+            }
+            const count = parseInt(countInput);
+            if (isNaN(count) || count < 1) {
+                alert("Please enter a valid total word count (minimum 1).");
                 return;
             }
 
@@ -152,21 +516,32 @@
             document.getElementById("dashboard-container").classList.remove("hidden");
             document.getElementById("summary-info").innerText = `Language: ${lang} | Level: ${level} | Theme: ${theme}`;
 
-            // Fetch words (fall back to English bank if specific language array isn't fully populated yet)
-            let pool = [...(vocabularyBank[lang] || vocabularyBank["English"])];
+            // Fetch pool and randomize dynamically for ANY requested count
+            const langBank = vocabularyBank[lang] || vocabularyBank["English"];
+            let pool = [...(langBank[level] || langBank["Intermediate"] || Object.values(langBank)[0])];
             
-            // Randomize array to avoid repetitions
-            pool.sort(() => Math.random() - 0.5);
+            let selectedWords = [];
+            while (selectedWords.length < count) {
+                let shuffled = [...pool].sort(() => Math.random() - 0.5);
+                selectedWords = selectedWords.concat(shuffled);
+            }
+            selectedWords = selectedWords.slice(0, count);
 
-            const totalWordsNeeded = Math.min(count, pool.length);
-            const selectedWords = pool.slice(0, totalWordsNeeded);
+            // Descending split logic across morning, afternoon, evening
+            const base = Math.floor(count / 3);
+            const rem = count % 3;
 
-            // Split into 3 equal sessions (Morning, Afternoon, Evening)
-            const chunkSize = Math.ceil(selectedWords.length / 3);
+            const morningCount = base + (rem > 0 ? 1 : 0);
+            const afternoonCount = base + (rem > 1 ? 1 : 0);
+            const eveningCount = base;
+
+            let mEnd = morningCount;
+            let aEnd = mEnd + afternoonCount;
+
             vocabularyData = {
-                morning: selectedWords.slice(0, chunkSize),
-                afternoon: selectedWords.slice(chunkSize, chunkSize * 2),
-                evening: selectedWords.slice(chunkSize * 2)
+                morning: selectedWords.slice(0, mEnd),
+                afternoon: selectedWords.slice(mEnd, aEnd),
+                evening: selectedWords.slice(aEnd)
             };
 
             switchSession('morning');
@@ -249,6 +624,8 @@
             document.getElementById("onboarding-form").classList.remove("hidden");
             document.getElementById("lang-select").selectedIndex = 0;
             document.getElementById("level-select").selectedIndex = 0;
+            document.getElementById("word-count").value = "";
+            document.getElementById("theme-input").value = "";
         }
     </script>
 </body>
